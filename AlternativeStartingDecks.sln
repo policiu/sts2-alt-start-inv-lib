@@ -1,0 +1,19 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlternativeStartingDecks", "AlternativeStartingDecks.csproj", "{465497CB-A72C-4F79-BC5C-4D1D3245820F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		ExportDebug|Any CPU = ExportDebug|Any CPU
+		ExportRelease|Any CPU = ExportRelease|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{465497CB-A72C-4F79-BC5C-4D1D3245820F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{465497CB-A72C-4F79-BC5C-4D1D3245820F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{465497CB-A72C-4F79-BC5C-4D1D3245820F}.ExportDebug|Any CPU.ActiveCfg = ExportDebug|Any CPU
+		{465497CB-A72C-4F79-BC5C-4D1D3245820F}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
+		{465497CB-A72C-4F79-BC5C-4D1D3245820F}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
+		{465497CB-A72C-4F79-BC5C-4D1D3245820F}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
+	EndGlobalSection
+EndGlobal
