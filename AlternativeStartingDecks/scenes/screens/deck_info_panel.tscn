@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://bc1bay66xqbt4"]
+[gd_scene load_steps=17 format=3 uid="uid://bc1bay66xqbt4"]
 
 [ext_resource type="Texture2D" uid="uid://btjc3p508sth1" path="res://images/ui/fuzzy_nine_patch_char_select.png" id="1_2y3j0"]
 [ext_resource type="FontVariation" uid="uid://c71uw4aqpsn1b" path="res://themes/spectral_glphy_space_two.tres" id="2_rcnbj"]
@@ -9,8 +9,25 @@
 [ext_resource type="FontVariation" uid="uid://c6wnuvk3exmk5" path="res://themes/kreon_regular_shared.tres" id="7_0gfss"]
 [ext_resource type="Script" uid="uid://c2oywrx8xbqfx" path="res://addons/mega_text/MegaRichTextLabel.cs" id="8_mrmwp"]
 [ext_resource type="Texture2D" uid="uid://pr1rqg2t44qx" path="res://images/debug/placeholder_64.png" id="9_y4xqx"]
+[ext_resource type="Texture2D" uid="uid://cnw38r1" path="res://images/atlases/ui_atlas.sprites/top_bar/top_bar_deck.tres" id="9_ykdud"]
+[ext_resource type="Texture2D" uid="uid://boylmf6d6m4ys" path="res://images/ui/game_over_screen/discovery_potion.png" id="10_iqkhv"]
+[ext_resource type="Texture2D" uid="uid://bkv3xa2ojn5jk" path="res://images/ui/game_over_screen/discovery_relic.png" id="11_p3aly"]
 
-[sub_resource type="FontVariation" id="FontVariation_3rwao"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0gfss"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+corner_detail = 5
+expand_margin_left = 10.0
+expand_margin_right = 10.0
+
+[sub_resource type="FontVariation" id="FontVariation_3c48f"]
 base_font = ExtResource("5_iqkhv")
 spacing_glyph = 1
 
@@ -18,7 +35,7 @@ spacing_glyph = 1
 base_font = ExtResource("7_0gfss")
 spacing_glyph = 1
 
-[sub_resource type="FontVariation" id="FontVariation_3c48f"]
+[sub_resource type="FontVariation" id="FontVariation_3rwao"]
 base_font = ExtResource("5_iqkhv")
 spacing_glyph = 1
 
@@ -42,6 +59,7 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_right = 150.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("1_2y3j0")
@@ -55,9 +73,9 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 24.0
+offset_left = 48.0
 offset_top = 24.0
-offset_right = -26.0
+offset_right = 108.0
 offset_bottom = -26.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -77,28 +95,89 @@ script = ExtResource("3_2g4s6")
 MinFontSize = 45
 MaxFontSize = 80
 
-[node name="HpGoldSpacer" type="Control" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+follow_focus = true
+draw_focus_border = true
+horizontal_scroll_mode = 0
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/ScrollContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_0gfss")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Placeholder" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="HpGold" type="HBoxContainer" parent="VBoxContainer/HpGoldSpacer"]
-layout_mode = 0
-offset_top = -26.0
-offset_right = 551.0
-offset_bottom = 14.0
-theme_override_constants/separation = 48
+[node name="DeckLabel" type="RichTextLabel" parent="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/Placeholder"]
+clip_contents = false
+layout_mode = 2
+theme_override_colors/default_color = Color(0.937255, 0.784314, 0.317647, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.25098)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.25098)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/outline_size = 12
+theme_override_fonts/normal_font = SubResource("FontVariation_3c48f")
+theme_override_font_sizes/normal_font_size = 24
+theme_override_font_sizes/bold_font_size = 24
+theme_override_font_sizes/bold_italics_font_size = 24
+theme_override_font_sizes/italics_font_size = 24
+theme_override_font_sizes/mono_font_size = 24
+bbcode_enabled = true
+text = "Deck Name"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+script = ExtResource("8_mrmwp")
+MinFontSize = 16
+MaxFontSize = 24
+IsVerticallyBound = false
 
-[node name="Hp" type="HBoxContainer" parent="VBoxContainer/HpGoldSpacer/HpGold"]
+[node name="DescriptionLabel" type="RichTextLabel" parent="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/Placeholder"]
+clip_contents = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/default_color = Color(1, 0.964706, 0.886275, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.25098)
+theme_override_constants/line_separation = -2
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/normal_font = SubResource("FontVariation_ueawe")
+theme_override_font_sizes/normal_font_size = 24
+theme_override_font_sizes/bold_font_size = 24
+theme_override_font_sizes/bold_italics_font_size = 24
+theme_override_font_sizes/italics_font_size = 24
+theme_override_font_sizes/mono_font_size = 24
+bbcode_enabled = true
+text = "Deck Description"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+script = ExtResource("8_mrmwp")
+MaxFontSize = 24
+IsVerticallyBound = false
+
+[node name="HpGold" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/Placeholder"]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="Hp" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/Placeholder/HpGold"]
 layout_mode = 2
 
-[node name="Icon" type="TextureRect" parent="VBoxContainer/HpGoldSpacer/HpGold/Hp"]
+[node name="Icon" type="TextureRect" parent="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/Placeholder/HpGold/Hp"]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 texture = ExtResource("4_ykdud")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Label" type="Label" parent="VBoxContainer/HpGoldSpacer/HpGold/Hp"]
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/Placeholder/HpGold/Hp"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.392157, 0.392157, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.25098)
@@ -112,17 +191,17 @@ text = "80/80"
 script = ExtResource("3_2g4s6")
 AutoSizeEnabled = false
 
-[node name="Gold" type="HBoxContainer" parent="VBoxContainer/HpGoldSpacer/HpGold"]
+[node name="Gold" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/Placeholder/HpGold"]
 layout_mode = 2
 
-[node name="Icon" type="TextureRect" parent="VBoxContainer/HpGoldSpacer/HpGold/Gold"]
+[node name="Icon" type="TextureRect" parent="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/Placeholder/HpGold/Gold"]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 texture = ExtResource("6_p3aly")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Label" type="Label" parent="VBoxContainer/HpGoldSpacer/HpGold/Gold"]
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/Placeholder/HpGold/Gold"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.937255, 0.784314, 0.317647, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.25098)
@@ -136,32 +215,74 @@ text = "99"
 script = ExtResource("3_2g4s6")
 AutoSizeEnabled = false
 
-[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+[node name="Deck" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/Placeholder/HpGold"]
 layout_mode = 2
-size_flags_vertical = 3
-follow_focus = true
-draw_focus_border = true
-horizontal_scroll_mode = 0
 
-[node name="DescriptionLabel" type="RichTextLabel" parent="VBoxContainer/ScrollContainer"]
-clip_contents = false
+[node name="Icon" type="TextureRect" parent="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/Placeholder/HpGold/Deck"]
+custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_colors/default_color = Color(1, 0.964706, 0.886275, 1)
+texture = ExtResource("9_ykdud")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/Placeholder/HpGold/Deck"]
+layout_mode = 2
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.25098)
-theme_override_constants/line_separation = -2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.25098)
 theme_override_constants/shadow_offset_x = 3
 theme_override_constants/shadow_offset_y = 2
-theme_override_fonts/normal_font = SubResource("FontVariation_ueawe")
-theme_override_font_sizes/normal_font_size = 24
-bbcode_enabled = true
-text = "Fish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish ApplesFish Apples"
-fit_content = true
-scroll_active = false
-script = ExtResource("8_mrmwp")
+theme_override_constants/outline_size = 12
+theme_override_fonts/font = SubResource("FontVariation_3rwao")
+theme_override_font_sizes/font_size = 28
+text = "99"
+script = ExtResource("3_2g4s6")
 AutoSizeEnabled = false
-MaxFontSize = 24
+
+[node name="Potions" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/Placeholder/HpGold"]
+layout_mode = 2
+
+[node name="Icon" type="TextureRect" parent="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/Placeholder/HpGold/Potions"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture = ExtResource("10_iqkhv")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/Placeholder/HpGold/Potions"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.25098)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.25098)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/outline_size = 12
+theme_override_fonts/font = SubResource("FontVariation_3rwao")
+theme_override_font_sizes/font_size = 28
+text = "99"
+script = ExtResource("3_2g4s6")
+AutoSizeEnabled = false
+
+[node name="Relics" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/Placeholder/HpGold"]
+layout_mode = 2
+
+[node name="Icon" type="TextureRect" parent="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/Placeholder/HpGold/Relics"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture = ExtResource("11_p3aly")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/Placeholder/HpGold/Relics"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.25098)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.25098)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/outline_size = 12
+theme_override_fonts/font = SubResource("FontVariation_3rwao")
+theme_override_font_sizes/font_size = 28
+text = "99"
+script = ExtResource("3_2g4s6")
+AutoSizeEnabled = false
 
 [node name="Relic" type="Control" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 100)
