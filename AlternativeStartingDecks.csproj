@@ -52,6 +52,8 @@
         <EmbeddedResource Remove="materials/**"/>
         <EmbeddedResource Remove="shaders/**"/>
         <EmbeddedResource Remove="images/**"/>
+        <Compile Remove="Tools\obj\**" />
+        <EmbeddedResource Remove="Tools\obj\**" />
     </ItemGroup>
 
     <ItemGroup>
