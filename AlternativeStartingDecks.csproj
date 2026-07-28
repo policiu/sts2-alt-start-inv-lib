@@ -5,6 +5,8 @@
         <ImplicitUsings>true</ImplicitUsings>
         <Nullable>enable</Nullable> <!--Makes code analysis regarding null values stricter.-->
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <OutputPath>bin\$(Configuration)\</OutputPath>
+        <DefaultItemExcludes>packages/**</DefaultItemExcludes>
 
         <AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>
         <PathMap>$(AppOutputBase)=.\</PathMap>
@@ -95,6 +97,11 @@
         <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ModsPath)$(MSBuildProjectName)/"/>
         <Copy SourceFiles="$(AssemblyName).json" DestinationFolder="$(ModsPath)$(MSBuildProjectName)/"/>
         <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(ModsPath)$(MSBuildProjectName)/"/>
+        <Message Text="Copying BaseLib dependencies..." Importance="high"/>
+        <ItemGroup>
+            <BaseLibFiles Include="$(NuGetPackageRoot)alchyr.sts2.baselib/**/lib/**/BaseLib.dll;$(NuGetPackageRoot)alchyr.sts2.baselib/**/Content/BaseLib.pck;$(NuGetPackageRoot)alchyr.sts2.baselib/**/Content/BaseLib.json;"/>
+        </ItemGroup>
+        <Copy SourceFiles="@(BaseLibFiles)" DestinationFolder="$(ModsPath)BaseLib/"/>
     </Target>
 
     <Target Name="CopyQuickPck" AfterTargets="PackPck" Condition="Exists('$(PckPackerOutputPath)') And '$(PckPackerSkipped)' != 'true'">
