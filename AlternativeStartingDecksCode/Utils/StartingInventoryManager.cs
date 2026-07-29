@@ -19,4 +19,11 @@ public static class StartingInventoryManager
         AlternativeStartingDecksConfig.AlternativeStartingDecksByCharacter[characterClassName][inventoryDescriptor] =
             inventory;
     }
+
+
+    public static List<AlternativeStartingInventory> GetStartingInventoriesForCharacter(
+        string characterClassName)
+    {
+        return AlternativeStartingDecksConfig.AlternativeStartingDecksByCharacter[characterClassName].Values.ToList();
+    }
 }

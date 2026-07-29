@@ -1,4 +1,5 @@
 ﻿using AlternativeStartingDecks.AlternativeStartingDecksCode.Scenes.Screens;
+using AlternativeStartingDecks.AlternativeStartingDecksCode.Utils;
 using BaseLib.Config;
 using Godot;
 using HarmonyLib;
@@ -117,24 +118,9 @@ public class DeckSelectorPatch
         private static void LoadDecks(NCharacterSelectScreen screen)
         {
             var oldControl = screen.GetNodeOrNull<Control>(_deckInfoName);
-            /*
-            // Clean up previous
-            if (oldControl != null)
-            {
-                screen.RemoveChild(oldControl);
-                oldControl.QueueFree();
-            }
-
-            // Set up next one
-            var deckInfoPanel = (Control)deckInfoPanelPlaceholder.Duplicate(0x10);
-            deckInfoPanel.Name = _deckInfoName;
-            screen.AddChild(deckInfoPanel);
-            deckInfoPanel.SetVisible(true);
-            var a = new Label();
-            */
-
             PopulateDecksInPanel(screen, oldControl);
         }
+
 
         private static void PopulateDecksInPanel(NCharacterSelectScreen screen, Control deckInfoPanel)
         {
@@ -144,19 +130,29 @@ public class DeckSelectorPatch
             foreach (var child in container.GetChildren())
                 child.QueueFree();
 
-            for (var i = 0; i < 10; i++)
+            var character = screen._selectedButton?._character.GetType().Name;
+
+            if (character is null) return;
+
+            var inventories = StartingInventoryManager.GetStartingInventoriesForCharacter(character);
+
+            foreach (var inventory in inventories)
             {
                 var deckInfoControl = (Control?)DeckInfoPlaceholderExtended.LoadScene();
-
                 if (deckInfoControl == null) continue;
                 deckInfoControl.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
 
 
                 container.AddChild(deckInfoControl);
-                deckInfoControl.SetVisible(true);
-                deckInfoControl = deckInfoControl.GetNode<Control>("VBoxContainer");
 
-                deckInfoControl.GetNode<RichTextLabel>("DeckLabel").Text = "Hi!";
+                var deckHelper = (DeckInfoPlaceholderExtended)deckInfoControl;
+                deckHelper.SetVisible(true);
+
+                deckHelper.Deck = inventory.Cards.Count().ToString();
+                deckHelper.Hp = "9/9";
+                deckHelper.Relics = "4";
+                deckHelper.Potions = "3";
+                deckHelper.Gold = "123";
             }
         }
     }
