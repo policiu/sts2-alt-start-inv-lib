@@ -12,23 +12,33 @@ internal class AssetInformation
     public string VariableName => "var_" + Id;
 }
 
-internal class SubResourceInformation
+internal class RequiresInformation
 {
-    public readonly Dictionary<string, string> Requires = new();
+    public string Id = "";
+    public string Type = "";
+}
+
+internal class NodeInformation
+{
+    public readonly Dictionary<string, RequiresInformation> Requires = new();
+
+    public string Id = "";
+    public bool IsSubResource;
+    public bool Loaded;
     public string Name = "";
     public string Parent = "";
     public string Type = "";
+    public string VariableName => "var_" + Id;
 }
 
 public class GenerateSceneScripts
 {
-    private static readonly HashSet<string> AllowedSub = ["texture", "script"];
-
     private static readonly Dictionary<string, AssetInformation> AssetInformation = new();
-    private static readonly Dictionary<string, SubResourceInformation> SubResourceInformation = new();
+    private static readonly Dictionary<string, NodeInformation> NodeInformation = new();
     private static readonly Regex RegexExt = new(@"type=""(.*?)"" .*path=""(.*?)"" id=""(.*?)""");
-    private static readonly Regex RegexSub = new(@"name=""(.*?)"" .*type=""(.*?)"" parent=""(.*?)""");
-    private static readonly Regex RegexReq = new(@"(.*?) = ExtResource\(""(.*?)""\)");
+    private static readonly Regex RegexNode = new(@"name=""(.*?)"" .*type=""(.*?)"" parent=""(.*?)""");
+    private static readonly Regex RegexSub = new(@"type=""(.*?)"" id=""(.*?)""");
+    private static readonly Regex RegexReq = new(@"(.*?) = .*?\(""(.*?)""\)");
 
     private static string ToTileCase(string stri, string delim, string repl = "")
     {
@@ -66,7 +76,7 @@ public class GenerateSceneScripts
     private static void ParseTscnFile(string path)
     {
         AssetInformation.Clear();
-        SubResourceInformation.Clear();
+        NodeInformation.Clear();
 
         var lastResource = "";
         foreach (var line in File.ReadAllLines(path))
@@ -84,25 +94,38 @@ public class GenerateSceneScripts
 
             else if (line.StartsWith("[node"))
             {
-                var groups = RegexSub.Match(line).Groups;
+                var groups = RegexNode.Match(line).Groups;
                 lastResource = groups[3].Value + "/" + groups[1].Value;
-                SubResourceInformation[lastResource] = new SubResourceInformation
+                NodeInformation[lastResource] = new NodeInformation
                 {
                     Parent = groups[3].Value,
                     Type = groups[2].Value,
                     Name = groups[1].Value
                 };
             }
-            else if (line.StartsWith("[subresource"))
+            else if (line.StartsWith("[sub_resource"))
             {
-                lastResource = "";
+                var groups = RegexSub.Match(line).Groups;
+                lastResource = groups[2].Value;
+
+                NodeInformation[lastResource] = new NodeInformation
+                {
+                    Id = groups[2].Value,
+                    Type = groups[1].Value,
+                    IsSubResource = true
+                };
             }
 
-            else if (line.Contains("ExtResource"))
+            else if (line.Contains("ExtResource") || line.Contains("SubResource"))
             {
+                var type = line.Contains("ExtResource") ? "ExtResource" : "SubResource";
                 if (lastResource == "") continue;
                 var groups = RegexReq.Match(line).Groups;
-                SubResourceInformation[lastResource].Requires[groups[1].Value] = groups[2].Value;
+                NodeInformation[lastResource].Requires[groups[1].Value] = new RequiresInformation
+                {
+                    Type = type,
+                    Id = groups[2].Value
+                };
             }
     }
 
@@ -110,29 +133,80 @@ public class GenerateSceneScripts
     {
         var load = new List<string>();
         var apply = new List<string>();
+        var variableName = "";
 
-        foreach (var subResource in SubResourceInformation.Values)
-        foreach (var (resourceName, id) in subResource.Requires)
+        bool GenerateSubResource(string s, out NodeInformation? subResourceInfo)
         {
-            if (!AllowedSub.Contains(resourceName)) continue;
-
-            AssetInformation.TryGetValue(id, out var assetInfo);
-
-            if (assetInfo == null) continue;
-
-            if (!assetInfo.Loaded)
+            NodeInformation.TryGetValue(s, out subResourceInfo);
+            if (subResourceInfo == null) return true;
+            if (!subResourceInfo.Loaded)
             {
-                load.Add(GetLoadAsset(assetInfo));
-                assetInfo.Loaded = true;
+                load.Add(GetLoadSub(subResourceInfo));
+                subResourceInfo.Loaded = true;
             }
 
+            return false;
+        }
+
+        foreach (var nodeInformation in NodeInformation.Values)
+        foreach (var (resourceName, requiresInformation) in nodeInformation.Requires)
+        {
+            var id = requiresInformation.Id;
+            var requiresType = requiresInformation.Type;
+
+            if (requiresType == "ExtResource")
+            {
+                AssetInformation.TryGetValue(id, out var assetInfo);
+
+                if (assetInfo == null) continue;
+
+                if (!assetInfo.Loaded)
+                {
+                    load.Add(GetLoadAsset(assetInfo));
+                    assetInfo.Loaded = true;
+                }
+
+                variableName = assetInfo.VariableName;
+            }
+            else
+            {
+                if (GenerateSubResource(id, out var subResourceInfo)) continue;
+
+                variableName = subResourceInfo?.VariableName;
+            }
+
+            if (nodeInformation is { IsSubResource: true, Loaded: false })
+                GenerateSubResource(nodeInformation.Id, out _);
+
             if (resourceName == "texture")
-                apply.Add(GetNodeCode(subResource) + $".Texture = {assetInfo.VariableName};");
+            {
+                apply.Add(GetNodeCode(nodeInformation) + $".Texture = {variableName};");
+            }
             else if (resourceName == "script")
-                apply.Add(GetNodeCode(subResource) + $".SetScript({assetInfo.VariableName});");
+            {
+                if (!nodeInformation.IsSubResource)
+                    apply.Add(GetNodeCode(nodeInformation) + $".SetScript({variableName});");
+                else
+                    apply.Add($"        {nodeInformation.VariableName}.SetScript({variableName});");
+            }
+            else if (resourceName == "base_font")
+            {
+                apply.Add($"        {nodeInformation.VariableName}.BaseFont = {variableName};");
+            }
+            else if (resourceName.StartsWith("theme_override_fonts"))
+            {
+                var overrideName = resourceName.Remove(0, "theme_override_fonts/".Length);
+                apply.Add(GetNodeCode(nodeInformation) +
+                          $".AddThemeFontOverride(\"{overrideName}\", {variableName});");
+            }
         }
 
         return new Tuple<List<string>, List<string>>(load, apply);
+    }
+
+    private static string GetLoadSub(NodeInformation subResourceInfo)
+    {
+        return $"        var {subResourceInfo.VariableName} = new {subResourceInfo.Type}();";
     }
 
     private static string GetLoadAsset(AssetInformation asset)
@@ -140,9 +214,9 @@ public class GenerateSceneScripts
         return $"        var {asset.VariableName} = PreloadManager.Cache.GetAsset<{asset.Type}>(\"{asset.Path}\");";
     }
 
-    private static string GetNodeCode(SubResourceInformation subResource)
+    private static string GetNodeCode(NodeInformation node)
     {
-        return $"        result.GetNode<{subResource.Type}>(\"{subResource.Parent}/{subResource.Name}\")";
+        return $"        result.GetNode<{node.Type}>(\"{node.Parent}/{node.Name}\")";
     }
 
 
