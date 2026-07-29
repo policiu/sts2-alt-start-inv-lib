@@ -11,6 +11,9 @@ public partial class DeckInfoPlaceholderExtended : Control
         PreloadManager.Cache.LoadAsset(
             "res://AlternativeStartingDecksCode/Scenes/Screens/DeckInfoPlaceholderExtended.cs");
 
+    private static readonly string _deckDescriptionNode = "VBoxContainer/DescriptionLabel";
+    private static readonly string _deckNameNode = "VBoxContainer/DeckLabel";
+
     private string _deckNode = "VBoxContainer/HpGold/Deck";
     private string _goldNode = "VBoxContainer/HpGold/Gold";
 
@@ -48,6 +51,18 @@ public partial class DeckInfoPlaceholderExtended : Control
         set => GetNode<Label>(_relicsNode + "/Label").Text = value;
     }
 
+    public string DeckName
+    {
+        get => GetNode<MegaRichTextLabel>(_deckNameNode).Text;
+        set => GetNode<MegaRichTextLabel>(_deckNameNode).SetTextAutoSize(value);
+    }
+
+    public string DeckDescription
+    {
+        get => GetNode<MegaRichTextLabel>(_deckDescriptionNode).Text;
+        set => GetNode<MegaRichTextLabel>(_deckDescriptionNode).SetTextAutoSize(value);
+    }
+
     public static Node? LoadScene(string name = "DeckInfoPlaceholder")
     {
         var result = DeckInfoPlaceholder.LoadScene(name);
@@ -60,11 +75,23 @@ public partial class DeckInfoPlaceholderExtended : Control
         {
             if (child == null) continue;
 
-
             var script = (MegaLabel)child;
             script.AutoSizeEnabled = false;
             script.MinFontSize = 28;
             script.MaxFontSize = 100;
+        }
+
+        // Update the stupid MegaLabel
+        children = [result.GetNode(_deckNameNode), result.GetNode(_deckDescriptionNode)];
+
+        foreach (var child in children)
+        {
+            if (child == null) continue;
+
+            var script = (MegaRichTextLabel)child;
+            script.AutoSizeEnabled = false;
+            script.MinFontSize = 28;
+            script.MaxFontSize = 28;
         }
 
         result = result.SafelySetScript(ThisScript);

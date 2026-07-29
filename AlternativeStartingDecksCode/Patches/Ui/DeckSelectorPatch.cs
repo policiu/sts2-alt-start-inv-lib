@@ -91,6 +91,7 @@ public class DeckSelectorPatch
             {
                 AlternativeStartingDecksLogger.Warn("Unable to inject the Character SelectScreen. " + "\n" +
                                                     e.Message);
+                AlternativeStartingDecksLogger.Warn(e.StackTrace ?? " ");
             }
         }
 
@@ -148,11 +149,15 @@ public class DeckSelectorPatch
                 var deckHelper = (DeckInfoPlaceholderExtended)deckInfoControl;
                 deckHelper.SetVisible(true);
 
+                deckHelper.DeckName = inventory.Name;
+
+                deckHelper.DeckDescription = inventory.Description;
+
                 deckHelper.Deck = inventory.Cards.Count().ToString();
-                deckHelper.Hp = "9/9";
-                deckHelper.Relics = "4";
-                deckHelper.Potions = "3";
-                deckHelper.Gold = "123";
+                deckHelper.Hp = $"{inventory.Hp.ToString()}/{inventory.Hp.ToString()}";
+                deckHelper.Relics = inventory.Relics.Count().ToString();
+                deckHelper.Potions = inventory.Potions.Count().ToString();
+                deckHelper.Gold = inventory.Gold.ToString();
             }
         }
     }

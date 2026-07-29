@@ -1,10 +1,7 @@
-﻿using BaseLib.Config;
+﻿using AlternativeStartingDecks.AlternativeStartingDecksCode.Utils;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Models;
-using MegaCrit.Sts2.Core.Models.Cards;
-using MegaCrit.Sts2.Core.Models.Potions;
-using MegaCrit.Sts2.Core.Models.Relics;
 
 namespace AlternativeStartingDecks.AlternativeStartingDecksCode.Patches.Utils;
 
@@ -27,35 +24,12 @@ public class StartingDeckReplacement
         return false;
     }
 
-    private static AlternativeStartingInventory GetStartingInventory(Player player)
-    {
-        var found = AlternativeStartingDecksConfig.AlternativeStartingDecksByCharacter.TryGetValue(
-            player.Character.GetType().Name, out var startingInventory);
-
-        if (found && startingInventory?.Count > 0)
-            return startingInventory.First().Value;
-
-        // If we don't find anything. Panic!
-        // Later, just return the default items
-        ModConfig.ModConfigLogger.Warn(
-            $"Failed to find {player.Character.GetType().Name} in {nameof(StartingDeckReplacement)}");
-        return new AlternativeStartingInventory([
-            ModelDb.Card<StrikeNecrobinder>(),
-            ModelDb.Card<StrikeNecrobinder>(),
-            ModelDb.Card<StrikeNecrobinder>(),
-            ModelDb.Card<StrikeNecrobinder>(),
-            ModelDb.Card<StrikeNecrobinder>(),
-            ModelDb.Card<StrikeNecrobinder>()
-        ], potions: [ModelDb.Potion<VulnerablePotion>()], relics: [ModelDb.Relic<Anchor>()]);
-    }
 
     private static void ReplaceStartingDeck(Player player)
     {
         var startingDeck = new List<CardModel>();
-        var startingInventory = GetStartingInventory(player);
-        var (
-            cards, _, _
-            ) = startingInventory;
+        var startingInventory = StartingInventoryManager.GetStartingInventoriesForCharacter(player.Character);
+        var cards = startingInventory[0].Cards;
 
         // Fallback
 

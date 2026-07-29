@@ -1,16 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://bc1bay66xqbt4"]
+[gd_scene load_steps=4 format=3 uid="uid://bc1bay66xqbt4"]
 
 [ext_resource type="Texture2D" uid="uid://btjc3p508sth1" path="res://images/ui/fuzzy_nine_patch_char_select.png" id="1_2y3j0"]
 [ext_resource type="FontVariation" uid="uid://c71uw4aqpsn1b" path="res://themes/spectral_glphy_space_two.tres" id="2_rcnbj"]
 [ext_resource type="Script" uid="uid://dtfio45agppyj" path="res://addons/mega_text/MegaLabel.cs" id="3_2g4s6"]
-[ext_resource type="FontVariation" uid="uid://bg85h22rkxs6g" path="res://themes/kreon_bold_shared.tres" id="5_iqkhv"]
-[ext_resource type="FontVariation" uid="uid://c6wnuvk3exmk5" path="res://themes/kreon_regular_shared.tres" id="7_0gfss"]
-[ext_resource type="Script" uid="uid://c2oywrx8xbqfx" path="res://addons/mega_text/MegaRichTextLabel.cs" id="8_mrmwp"]
-[ext_resource type="Texture2D" uid="uid://pr1rqg2t44qx" path="res://images/debug/placeholder_64.png" id="9_y4xqx"]
-
-[sub_resource type="FontVariation" id="FontVariation_3c48f"]
-base_font = ExtResource("5_iqkhv")
-spacing_glyph = 1
 
 [node name="DeckInfoPanel" type="Control"]
 layout_mode = 3
@@ -77,88 +69,3 @@ horizontal_scroll_mode = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]
 layout_mode = 2
-
-[node name="Relic" type="Control" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-
-[node name="Icon" type="TextureRect" parent="VBoxContainer/Relic"]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 1
-offset_top = 8.0
-offset_right = 64.0
-offset_bottom = 72.0
-pivot_offset = Vector2(32, 32)
-texture = ExtResource("9_y4xqx")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Outline" type="TextureRect" parent="VBoxContainer/Relic/Icon"]
-self_modulate = Color(0, 0, 0, 0.501961)
-show_behind_parent = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("9_y4xqx")
-expand_mode = 2
-stretch_mode = 5
-
-[node name="Name" type="MarginContainer" parent="VBoxContainer/Relic"]
-layout_mode = 1
-offset_left = 72.0
-offset_top = 8.0
-offset_right = 492.0
-offset_bottom = 48.0
-theme_override_constants/margin_top = 4
-
-[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/Relic/Name"]
-clip_contents = false
-layout_mode = 2
-theme_override_colors/default_color = Color(0.937255, 0.784314, 0.317647, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 0.25098)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.25098)
-theme_override_constants/shadow_offset_x = 3
-theme_override_constants/shadow_offset_y = 2
-theme_override_constants/outline_size = 12
-theme_override_fonts/normal_font = SubResource("FontVariation_3c48f")
-theme_override_font_sizes/normal_font_size = 24
-theme_override_font_sizes/bold_font_size = 24
-theme_override_font_sizes/bold_italics_font_size = 24
-theme_override_font_sizes/italics_font_size = 24
-theme_override_font_sizes/mono_font_size = 24
-bbcode_enabled = true
-text = "Burning Blood"
-scroll_active = false
-autowrap_mode = 0
-script = ExtResource("8_mrmwp")
-MinFontSize = 16
-MaxFontSize = 24
-
-[node name="Description" type="RichTextLabel" parent="VBoxContainer/Relic"]
-clip_contents = false
-layout_mode = 1
-offset_left = 72.0
-offset_top = 44.0
-offset_right = 492.0
-offset_bottom = 101.0
-theme_override_colors/default_color = Color(1, 0.964706, 0.886275, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0.0313726, 0.25098)
-theme_override_constants/line_separation = -2
-theme_override_constants/shadow_offset_x = 3
-theme_override_constants/shadow_offset_y = 2
-theme_override_fonts/normal_font = ExtResource("7_0gfss")
-theme_override_fonts/bold_font = ExtResource("5_iqkhv")
-theme_override_font_sizes/normal_font_size = 24
-theme_override_font_sizes/bold_font_size = 24
-theme_override_font_sizes/bold_italics_font_size = 24
-theme_override_font_sizes/italics_font_size = 24
-theme_override_font_sizes/mono_font_size = 24
-bbcode_enabled = true
-text = "At the end of combat, heal [green]6[/green] HP."
-scroll_active = false
-script = ExtResource("8_mrmwp")
-MinFontSize = 12
-MaxFontSize = 24

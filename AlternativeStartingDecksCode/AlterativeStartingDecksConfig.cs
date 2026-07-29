@@ -1,36 +1,31 @@
 ﻿using BaseLib.Config;
+using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Models;
 
 namespace AlternativeStartingDecks.AlternativeStartingDecksCode;
 
-public readonly struct AlternativeStartingInventory
+public readonly struct AlternativeStartingInventory(CharacterModel characterModel, string id)
 {
-    public readonly IEnumerable<CardModel> Cards = [];
-    public readonly IEnumerable<RelicModel> Relics = [];
-    public readonly IEnumerable<PotionModel> Potions = [];
+    public int Hp { get; init; } = characterModel.StartingHp;
+    public int Gold { get; init; } = characterModel.StartingGold;
+    public IEnumerable<CardModel> Cards { get; init; } = characterModel.StartingDeck;
+    public IEnumerable<RelicModel> Relics { get; init; } = characterModel.StartingRelics;
+    public IEnumerable<PotionModel> Potions { get; init; } = characterModel.StartingPotions;
 
-    public AlternativeStartingInventory(IEnumerable<CardModel> cards, IEnumerable<RelicModel> relics,
-        IEnumerable<PotionModel> potions)
-    {
-        Cards = cards;
-        Relics = relics;
-        Potions = potions;
-    }
+    public string Description { get; init; } =
+        new LocString("characters", characterModel.CharacterSelectDesc).GetFormattedText();
 
-    public void Deconstruct(out IEnumerable<CardModel> cards, out IEnumerable<RelicModel> relics,
-        out IEnumerable<PotionModel> potions)
-    {
-        cards = Cards;
-        relics = Relics;
-        potions = Potions;
-    }
+    public string Name { get; init; } =
+        new LocString("characters", characterModel.CharacterSelectTitle).GetFormattedText();
+
+    public string Id { get; } = id;
 }
 
 public static class AlternativeStartingDecksLogger
 {
     public static void Warn(string message)
     {
-        ModConfig.ModConfigLogger.Warn("[AlternativeStartingDecks]" + message);
+        ModConfig.ModConfigLogger.Warn("[AlternativeStartingDecks] " + message);
     }
 }
 

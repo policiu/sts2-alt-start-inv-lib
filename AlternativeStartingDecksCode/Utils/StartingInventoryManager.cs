@@ -1,29 +1,41 @@
-﻿namespace AlternativeStartingDecks.AlternativeStartingDecksCode.Utils;
+﻿using MegaCrit.Sts2.Core.Models;
+
+namespace AlternativeStartingDecks.AlternativeStartingDecksCode.Utils;
 
 public static class StartingInventoryManager
 {
     /// <summary>
     ///     Add a new starting inventory to add/replace to a character
     /// </summary>
-    /// <param name="characterClassName">Name of Character, use nameof(class)</param>
-    /// <param name="inventoryDescriptor">Unique descriptor of the deck to prevent duplicates. Not shown to the player.</param>
+    /// <param name="characterModel">Name of Character, use nameof(class)</param>
     /// <param name="inventory">Inventory to add</param>
     public static void AddNewInventoryForCharacter(
-        string characterClassName,
-        string inventoryDescriptor,
+        CharacterModel characterModel,
         AlternativeStartingInventory inventory)
     {
+        var characterClassName = characterModel.GetType().Name;
         AlternativeStartingDecksConfig.AlternativeStartingDecksByCharacter.TryAdd(characterClassName,
             new Dictionary<string, AlternativeStartingInventory>());
 
-        AlternativeStartingDecksConfig.AlternativeStartingDecksByCharacter[characterClassName][inventoryDescriptor] =
+        AlternativeStartingDecksConfig.AlternativeStartingDecksByCharacter[characterClassName][inventory.Id] =
             inventory;
     }
 
+
+    public static List<AlternativeStartingInventory> GetStartingInventoriesForCharacter(CharacterModel character)
+    {
+        return GetStartingInventoriesForCharacter(character.GetType().Name);
+    }
 
     public static List<AlternativeStartingInventory> GetStartingInventoriesForCharacter(
         string characterClassName)
     {
         return AlternativeStartingDecksConfig.AlternativeStartingDecksByCharacter[characterClassName].Values.ToList();
+    }
+
+    internal static void LoadDefaultInventoryForAllCharacters()
+    {
+        foreach (var character in ModelDb.AllCharacters)
+            AddNewInventoryForCharacter(character, new AlternativeStartingInventory(character, "default"));
     }
 }
