@@ -26,6 +26,14 @@ public readonly struct AlternativeStartingInventory
     }
 }
 
+public static class AlternativeStartingDecksLogger
+{
+    public static void Warn(string message)
+    {
+        ModConfig.ModConfigLogger.Warn("[AlternativeStartingDecks]" + message);
+    }
+}
+
 internal class AlternativeStartingDecksConfig : SimpleModConfig
 {
     /// <summary>

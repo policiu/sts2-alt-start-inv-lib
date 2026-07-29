@@ -65,6 +65,7 @@ public class DeckSelectorPatch
 
             // Anyways :)
             var next = DeckInfoPanel.LoadScene();
+            if (next == null) return;
             infoPanelOg.AddSibling(next);
         }
     }
@@ -76,6 +77,8 @@ public class DeckSelectorPatch
         private static Tween? _deckInfoTween;
         private static Vector2 _deckInfoPosition;
 
+        private static readonly string _deckInfoName = "DeckInfoPanel";
+
         [HarmonyPostfix]
         public static void Postfix(NCharacterSelectScreen __instance)
         {
@@ -85,14 +88,21 @@ public class DeckSelectorPatch
             }
             catch (Exception e)
             {
-                ModConfig.ModConfigLogger.Warn("[ASD] Unable to inject the Character SelectScreen. " + "\n" +
-                                               e.Message);
+                AlternativeStartingDecksLogger.Warn("Unable to inject the Character SelectScreen. " + "\n" +
+                                                    e.Message);
             }
         }
 
         private static void InjectSelectCharacter(NCharacterSelectScreen screen)
         {
-            var deckInfoPanel = screen.GetNodeOrNull<Control>("DeckInfoPanel");
+            RunTween(screen);
+            LoadDecks(screen);
+        }
+
+
+        private static void RunTween(NCharacterSelectScreen screen)
+        {
+            var deckInfoPanel = screen.GetNodeOrNull<Control>(_deckInfoName);
             if (deckInfoPanel == null) return;
             if (_deckInfoTween != null) deckInfoPanel.Position = _deckInfoPosition;
             _deckInfoPosition = deckInfoPanel.Position;
@@ -102,6 +112,52 @@ public class DeckSelectorPatch
             _deckInfoTween.TweenProperty(deckInfoPanel, (NodePath)"position", deckInfoPanel.Position, 0.5)
                 .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Expo)
                 .From(deckInfoPanel.Position + new Vector2(300f, 0.0f));
+        }
+
+        private static void LoadDecks(NCharacterSelectScreen screen)
+        {
+            var oldControl = screen.GetNodeOrNull<Control>(_deckInfoName);
+            /*
+            // Clean up previous
+            if (oldControl != null)
+            {
+                screen.RemoveChild(oldControl);
+                oldControl.QueueFree();
+            }
+
+            // Set up next one
+            var deckInfoPanel = (Control)deckInfoPanelPlaceholder.Duplicate(0x10);
+            deckInfoPanel.Name = _deckInfoName;
+            screen.AddChild(deckInfoPanel);
+            deckInfoPanel.SetVisible(true);
+            var a = new Label();
+            */
+
+            PopulateDecksInPanel(screen, oldControl);
+        }
+
+        private static void PopulateDecksInPanel(NCharacterSelectScreen screen, Control deckInfoPanel)
+        {
+            var container = deckInfoPanel.GetNodeOrNull<Control>("VBoxContainer/ScrollContainer/VBoxContainer");
+
+            if (container == null) return;
+            foreach (var child in container.GetChildren())
+                child.QueueFree();
+
+            for (var i = 0; i < 10; i++)
+            {
+                var deckInfoControl = (Control?)DeckInfoPlaceholderExtended.LoadScene();
+
+                if (deckInfoControl == null) continue;
+                deckInfoControl.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+
+
+                container.AddChild(deckInfoControl);
+                deckInfoControl.SetVisible(true);
+                deckInfoControl = deckInfoControl.GetNode<Control>("VBoxContainer");
+
+                deckInfoControl.GetNode<RichTextLabel>("DeckLabel").Text = "Hi!";
+            }
         }
     }
 }
