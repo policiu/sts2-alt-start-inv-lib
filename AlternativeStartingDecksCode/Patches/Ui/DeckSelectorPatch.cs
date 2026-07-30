@@ -92,8 +92,8 @@ public class DeckSelectorPatch
             }
             catch (Exception e)
             {
-                AlternativeStartingDecksLogger.Warn("Unable to inject the Character SelectScreen. " + "\n" +
-                                                    e.Message);
+                AlternativeStartingDecksLogger.Warn("Unable to inject the Character SelectScreen. " + "\n" + e.Message +
+                                                    "\n" + e.StackTrace);
                 AlternativeStartingDecksLogger.Warn(e.InnerException?.Message ?? " ");
             }
         }

@@ -7,13 +7,6 @@ namespace AlternativeStartingDecks.AlternativeStartingDecksCode.Scenes.Screens;
 
 public partial class DeckInfoPlaceholderExtended : Control
 {
-    private static readonly Resource ThisScript =
-        PreloadManager.Cache.LoadAsset(
-            "res://AlternativeStartingDecksCode/Scenes/Screens/DeckInfoPlaceholderExtended.cs");
-
-    private static readonly StyleBoxFlat SelectedTheme =
-        (StyleBoxFlat)PreloadManager.Cache.LoadAsset("res://AlternativeStartingDecks/themes/selected_theme.tres");
-
     private static readonly string _deckDescriptionNode = "VBoxContainer/DescriptionLabel";
     private static readonly string _deckNameNode = "VBoxContainer/DeckLabel";
 
@@ -25,6 +18,7 @@ public partial class DeckInfoPlaceholderExtended : Control
     private string _hpNode = "VBoxContainer/HpGold/Hp";
     private string _potionsNode = "VBoxContainer/HpGold/Potions";
     private string _relicsNode = "VBoxContainer/HpGold/Relics";
+    private StyleBoxFlat? _selectedTheme;
 
     // Add static constructor
     static DeckInfoPlaceholderExtended()
@@ -77,7 +71,9 @@ public partial class DeckInfoPlaceholderExtended : Control
 
     public override void _Ready()
     {
-        StartLoopingBorder(CreateTween().SetLoops(), SelectedTheme, 1.0f);
+        _selectedTheme =
+            (StyleBoxFlat?)PreloadManager.Cache.LoadAsset("res://AlternativeStartingDecks/themes/selected_theme.tres");
+        if (_selectedTheme != null) StartLoopingBorder(CreateTween().SetLoops(), _selectedTheme, 1.0f);
         base._Ready();
     }
 
@@ -93,8 +89,8 @@ public partial class DeckInfoPlaceholderExtended : Control
 
     public void SetSelected(bool selected)
     {
-        if (selected)
-            AddThemeStyleboxOverride("panel", SelectedTheme);
+        if (selected && _selectedTheme != null)
+            AddThemeStyleboxOverride("panel", _selectedTheme);
         else
             RemoveThemeStyleboxOverride("panel");
     }
@@ -108,7 +104,8 @@ public partial class DeckInfoPlaceholderExtended : Control
         DisableAutoSize(result);
 
         // Setting Script directly disposes the previous object
-        result = result.SafelySetScript(ThisScript);
+        result = result.SafelySetScript(PreloadManager.Cache.LoadAsset(
+            "res://AlternativeStartingDecksCode/Scenes/Screens/DeckInfoPlaceholderExtended.cs"));
 
         return result;
     }
