@@ -87,8 +87,12 @@ public class DeckSelectorPatch
         potionHx.LoadPotions(tmpPlayer, inventory.Potions.ToList());
 
         // Basically, we want to be next to the entry field so we can hover in it?
-        set.GlobalPosition = new Vector2(moveToControl.GlobalPosition.X + moveToControl.Size.X + 25f,
-            Math.Max(45.0f, moveToControl.GlobalPosition.Y - set.Size.Y / 2));
+        var yPos = 0.0f;
+        yPos = Math.Max(moveToControl.GlobalPosition.Y - set.Size.Y / 2, 45.0f);
+
+        // Running into the Player Icons
+        if (yPos + set.Size.Y > 750) yPos = Math.Max(45.0f, 750 - set.Size.Y);
+        set.GlobalPosition = new Vector2(moveToControl.GlobalPosition.X + moveToControl.Size.X + 25f, yPos);
     }
 
     private static void OnHoverLeave()
