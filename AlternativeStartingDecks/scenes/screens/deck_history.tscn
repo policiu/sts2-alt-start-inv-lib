@@ -1,0 +1,53 @@
+[gd_scene load_steps=5 format=3 uid="uid://cyumcu6mv77sk"]
+
+[ext_resource type="Script" uid="uid://d1ed7fcx0t5qe" path="res://src/Core/Nodes/Screens/RunHistoryScreen/NDeckHistory.cs" id="1_e8xms"]
+[ext_resource type="FontVariation" uid="uid://cfurftqxyn4mn" path="res://themes/kreon_regular_glyph_space_one.tres" id="2_wstha"]
+[ext_resource type="FontVariation" uid="uid://ux4d708e7mk6" path="res://themes/kreon_bold_glyph_space_one.tres" id="3_xkgtr"]
+[ext_resource type="Script" uid="uid://c2oywrx8xbqfx" path="res://addons/mega_text/MegaRichTextLabel.cs" id="17_4a7ov"]
+
+[node name="DeckHistory" type="VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_e8xms")
+
+[node name="Header" type="RichTextLabel" parent="."]
+visible = false
+clip_contents = false
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/default_color = Color(1, 0.964706, 0.886275, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.501961)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/normal_font = ExtResource("2_wstha")
+theme_override_fonts/bold_font = ExtResource("3_xkgtr")
+theme_override_font_sizes/normal_font_size = 24
+theme_override_font_sizes/bold_font_size = 24
+theme_override_font_sizes/bold_italics_font_size = 24
+theme_override_font_sizes/italics_font_size = 24
+theme_override_font_sizes/mono_font_size = 24
+bbcode_enabled = true
+text = "[gold]Cards (30)[/gold]: Ancient (2), Rare (4), Uncommon (6), Common (12), Starter (1)"
+fit_content = true
+scroll_active = false
+script = ExtResource("17_4a7ov")
+AutoSizeEnabled = false
+MinFontSize = 24
+MaxFontSize = 24
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 64
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 24
+
+[node name="CardContainer" type="HFlowContainer" parent="MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2

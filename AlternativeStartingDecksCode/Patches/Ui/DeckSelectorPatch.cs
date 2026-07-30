@@ -1,12 +1,17 @@
 ﻿using System.Diagnostics;
+using AlternativeStartingDecks.AlternativeStartingDecksCode.Nodes.HoverTips;
 using AlternativeStartingDecks.AlternativeStartingDecksCode.Scenes.Screens;
 using AlternativeStartingDecks.AlternativeStartingDecksCode.Utils;
 using BaseLib.Config;
 using Godot;
 using HarmonyLib;
+using MegaCrit.Sts2.Core.Entities.Players;
+using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Nodes.HoverTips;
 using MegaCrit.Sts2.Core.Nodes.Screens.CharacterSelect;
+using MegaCrit.Sts2.Core.Nodes.Screens.RunHistoryScreen;
 using Timer = Godot.Timer;
 
 namespace AlternativeStartingDecks.AlternativeStartingDecksCode.Patches.Ui;
@@ -38,6 +43,30 @@ public class DeckSelectorPatch
 
         deck.SetSelected(true);
         AlternativeStartingDecksGlobals.StartingInventory = inventory;
+    }
+
+    private static void OnHover(Control owner, Control moveToControl, CharacterModel characterModel,
+        AlternativeStartingInventory inventory)
+    {
+        NHoverTipSet.Clear();
+
+        var hx = (NDeckHistory?)DeckHistory.LoadScene();
+        if (hx == null) return;
+
+        var set = CustomHoverTipSet.CreateAndShowWithContent(owner, [
+                new CustomHoverTip
+                {
+                    HoverTip = new HoverTip(new LocString("main_menu_ui", "CHARACTER_SELECT.locked.title")
+                    ),
+                    Content = hx
+                }
+            ]
+        );
+        if (set == null) return;
+        hx.LoadDeck(new Player(characterModel, 0, 0, 0, 0, 0, 0, 0, null, null),
+            inventory.Cards.Select(c => c.ToMutable().ToSerializable()));
+
+        set.GlobalPosition = new Vector2(moveToControl.GlobalPosition.X + moveToControl.Size.X, 45.0f);
     }
 
     [HarmonyPatch(typeof(NCharacterSelectScreen), nameof(NCharacterSelectScreen._Ready))]
@@ -214,6 +243,8 @@ public class DeckSelectorPatch
 
                 // Apply Event
                 deckHelper.Button.MousePressed += _ => OnDeckPressed(deckHelper, inventory, charSelectButton.IsLocked);
+                deckHelper.Button.MouseEntered +=
+                    () => OnHover(screen, deckHelper, charSelectButton._character, inventory);
 
                 if (first)
                 {

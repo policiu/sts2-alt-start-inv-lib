@@ -37,6 +37,19 @@ internal class DeckInitializationPatch
                 Potions = [ModelDb.Potion<HeartOfIron>()]
             });
 
+
+        StartingInventoryManager.AddNewInventoryForCharacter(ModelDb.AllCharacters.First(),
+            new AlternativeStartingInventory(ModelDb.AllCharacters.First(), "example4")
+            {
+                Gold = 20,
+                Hp = 3,
+                Name = "All Cards!",
+                Description = "As hard as possible",
+                Relics = [ModelDb.Relic<Anchor>(), ModelDb.Relic<Pear>()],
+                Potions = [ModelDb.Potion<HeartOfIron>()],
+                Cards = ModelDb.AllCards
+            });
+
         StartingInventoryManager.AddNewInventoryForCharacter(ModelDb.AllCharacters.Last(),
             new AlternativeStartingInventory(ModelDb.AllCharacters.Last(), "example-3")
             {

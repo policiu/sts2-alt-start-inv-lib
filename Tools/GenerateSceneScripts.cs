@@ -15,12 +15,13 @@ internal class AssetInformation
 internal class RequiresInformation
 {
     public string Id = "";
+    public string resourceName = "";
     public string Type = "";
 }
 
 internal class NodeInformation
 {
-    public readonly Dictionary<string, RequiresInformation> Requires = new();
+    public readonly List<RequiresInformation> Requires = new();
 
     public string Id = "";
     public bool IsSubResource;
@@ -118,14 +119,34 @@ public class GenerateSceneScripts
 
             else if (line.Contains("ExtResource") || line.Contains("SubResource"))
             {
+                // Need to handle []
+                var list = new List<string>();
+                if (line.Contains("["))
+                {
+                    var subStr = line.Split("[").Last();
+                    subStr = subStr.Split("]").First();
+
+                    var groups = RegexReq.Match(line).Groups;
+
+                    list.AddRange(subStr.Split(",").Select(s => groups[1].Value + " = " + s.Trim()));
+                }
+                else
+                {
+                    list.Add(line);
+                }
+
                 var type = line.Contains("ExtResource") ? "ExtResource" : "SubResource";
                 if (lastResource == "") continue;
-                var groups = RegexReq.Match(line).Groups;
-                NodeInformation[lastResource].Requires[groups[1].Value] = new RequiresInformation
+                foreach (var item in list)
                 {
-                    Type = type,
-                    Id = groups[2].Value
-                };
+                    var groups = RegexReq.Match(item).Groups;
+                    NodeInformation[lastResource].Requires.Add(new RequiresInformation
+                    {
+                        resourceName = groups[1].Value,
+                        Type = type,
+                        Id = groups[2].Value
+                    });
+                }
             }
     }
 
@@ -149,8 +170,9 @@ public class GenerateSceneScripts
         }
 
         foreach (var nodeInformation in NodeInformation.Values)
-        foreach (var (resourceName, requiresInformation) in nodeInformation.Requires)
+        foreach (var requiresInformation in nodeInformation.Requires)
         {
+            var resourceName = requiresInformation.resourceName;
             var id = requiresInformation.Id;
             var requiresType = requiresInformation.Type;
 
@@ -184,14 +206,19 @@ public class GenerateSceneScripts
             }
             else if (resourceName == "script")
             {
-                if (!nodeInformation.IsSubResource)
-                    apply.Add(GetNodeCode(nodeInformation) + $".SetScript({variableName});");
+                var nodeCode = GetNodeCode(nodeInformation);
+                if (nodeInformation.IsSubResource || nodeCode == "result")
+                    apply.Add($"{nodeCode} = {nodeCode}.SafelySetScript({variableName})!;");
                 else
-                    apply.Add($"        {nodeInformation.VariableName}.SetScript({variableName});");
+                    apply.Add($"{nodeCode}.SafelySetScript({variableName});");
             }
             else if (resourceName == "base_font")
             {
                 apply.Add($"        {nodeInformation.VariableName}.BaseFont = {variableName};");
+            }
+            else if (resourceName == "custom_effects")
+            {
+                apply.Add(GetNodeCode(nodeInformation) + $".CustomEffects.Add({variableName});");
             }
             else if (resourceName.StartsWith("theme_override_fonts"))
             {
@@ -206,17 +233,19 @@ public class GenerateSceneScripts
 
     private static string GetLoadSub(NodeInformation subResourceInfo)
     {
-        return $"        var {subResourceInfo.VariableName} = new {subResourceInfo.Type}();";
+        return $"var {subResourceInfo.VariableName} = new {subResourceInfo.Type}();";
     }
 
     private static string GetLoadAsset(AssetInformation asset)
     {
-        return $"        var {asset.VariableName} = PreloadManager.Cache.GetAsset<{asset.Type}>(\"{asset.Path}\");";
+        return $"var {asset.VariableName} = PreloadManager.Cache.GetAsset<{asset.Type}>(\"{asset.Path}\");";
     }
 
     private static string GetNodeCode(NodeInformation node)
     {
-        return $"        result.GetNode<{node.Type}>(\"{node.Parent}/{node.Name}\")";
+        if (node.IsSubResource) return node.VariableName;
+        if (node is { Parent: "", Name: "" }) return "result";
+        return $"result.GetNode<{node.Type}>(\"{node.Parent}/{node.Name}\")";
     }
 
 
@@ -225,6 +254,7 @@ public class GenerateSceneScripts
     {
         return $$"""
                  /* GENERATED CODE, DO NOT MODIFY */
+                 using AlternativeStartingDecks.AlternativeStartingDecksCode.Patches.Utils;
                  using Godot;
                  using MegaCrit.Sts2.Core.Assets;
                  namespace AlternativeStartingDecks.AlternativeStartingDecksCode.{{codePath}};
@@ -239,10 +269,10 @@ public class GenerateSceneScripts
                         if (result == null) return null; 
                         
                         // Load Dependencies
-                 {{string.Join("\n", dependencyStrings)}}
+                 {{"        " + string.Join("\n        ", dependencyStrings)}}
                         
                         // Apply Dependencies
-                 {{string.Join("\n", applyDependencyStrings)}}
+                 {{"        " + string.Join("\n        ", applyDependencyStrings)}}
                         
                         result.Name = name;
                         

@@ -26,7 +26,6 @@ expand_margin_top = 5.0
 expand_margin_right = 5.0
 expand_margin_bottom = 5.0
 
-
 [sub_resource type="FontVariation" id="FontVariation_3c48f"]
 base_font = ExtResource("1_7ej3d")
 spacing_glyph = 1
@@ -94,7 +93,6 @@ bbcode_enabled = true
 text = "Deck Description"
 fit_content = true
 scroll_active = false
-autowrap_mode = 0
 script = ExtResource("15_ho10k")
 AutoSizeEnabled = false
 MinFontSize = 24
