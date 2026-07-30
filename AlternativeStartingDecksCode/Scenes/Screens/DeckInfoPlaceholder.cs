@@ -26,6 +26,7 @@ public static class DeckInfoPlaceholder
         var var_20_v5b6b = PreloadManager.Cache.GetAsset<Texture2D>("res://images/atlases/ui_atlas.sprites/top_bar/top_bar_deck.tres");
         var var_21_2hq02 = PreloadManager.Cache.GetAsset<Texture2D>("res://images/ui/game_over_screen/discovery_potion.png");
         var var_22_ubig5 = PreloadManager.Cache.GetAsset<Texture2D>("res://images/ui/game_over_screen/discovery_relic.png");
+        var var_10_eawkm = PreloadManager.Cache.GetAsset<Script>("res://src/Core/Nodes/GodotExtensions/NButton.cs");
        
        // Apply Dependencies
         var_FontVariation_3c48f.BaseFont = var_1_7ej3d;
@@ -50,6 +51,7 @@ public static class DeckInfoPlaceholder
         result.GetNode<TextureRect>("VBoxContainer/HpGold/Relics/Icon").Texture = var_22_ubig5;
         result.GetNode<Label>("VBoxContainer/HpGold/Relics/Label").AddThemeFontOverride("font", var_FontVariation_3rwao);
         result.GetNode<Label>("VBoxContainer/HpGold/Relics/Label").SetScript(var_18_6f3yj);
+        result.GetNode<TextureButton>("./Button").SetScript(var_10_eawkm);
        
        result.Name = name;
        

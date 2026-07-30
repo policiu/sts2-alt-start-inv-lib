@@ -2,6 +2,7 @@
 using Godot;
 using MegaCrit.Sts2.addons.mega_text;
 using MegaCrit.Sts2.Core.Assets;
+using MegaCrit.Sts2.Core.Nodes.GodotExtensions;
 
 namespace AlternativeStartingDecks.AlternativeStartingDecksCode.Scenes.Screens;
 
@@ -67,7 +68,7 @@ public partial class DeckInfoPlaceholderExtended : Control
         set => GetNode<MegaRichTextLabel>(_deckDescriptionNode).SetTextAutoSize(value);
     }
 
-    public BaseButton Button => GetNode<BaseButton>("Button");
+    public NButton Button => GetNode<NButton>("Button");
 
     public override void _Ready()
     {

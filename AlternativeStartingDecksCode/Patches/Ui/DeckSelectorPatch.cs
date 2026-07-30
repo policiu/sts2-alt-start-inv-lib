@@ -183,7 +183,7 @@ public class DeckSelectorPatch
                 SetupDeckStrings(deckHelper, inventory, charSelectButton.IsLocked);
 
                 // Apply Event
-                deckHelper.Button.Pressed += () => OnDeckPressed(deckHelper, inventory);
+                deckHelper.Button.MousePressed += _ => OnDeckPressed(deckHelper, inventory);
 
                 if (first)
                 {

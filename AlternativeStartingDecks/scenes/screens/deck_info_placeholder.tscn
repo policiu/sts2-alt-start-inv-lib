@@ -1,6 +1,7 @@
-[gd_scene load_steps=14 format=3 uid="uid://cj77kbrko1uq7"]
+[gd_scene load_steps=15 format=3 uid="uid://cj77kbrko1uq7"]
 
 [ext_resource type="FontVariation" uid="uid://bg85h22rkxs6g" path="res://themes/kreon_bold_shared.tres" id="1_7ej3d"]
+[ext_resource type="Script" uid="uid://deak8m0w1rrex" path="res://src/Core/Nodes/GodotExtensions/NButton.cs" id="10_eawkm"]
 [ext_resource type="Script" uid="uid://c2oywrx8xbqfx" path="res://addons/mega_text/MegaRichTextLabel.cs" id="15_ho10k"]
 [ext_resource type="FontVariation" uid="uid://c6wnuvk3exmk5" path="res://themes/kreon_regular_shared.tres" id="16_oejt8"]
 [ext_resource type="Texture2D" uid="uid://bi1dpaj" path="res://images/atlases/ui_atlas.sprites/top_bar/top_bar_heart.tres" id="17_6erg2"]
@@ -24,6 +25,7 @@ expand_margin_left = 5.0
 expand_margin_top = 5.0
 expand_margin_right = 5.0
 expand_margin_bottom = 5.0
+
 
 [sub_resource type="FontVariation" id="FontVariation_3c48f"]
 base_font = ExtResource("1_7ej3d")
@@ -224,3 +226,4 @@ AutoSizeEnabled = false
 layout_mode = 2
 toggle_mode = true
 stretch_mode = 0
+script = ExtResource("10_eawkm")
