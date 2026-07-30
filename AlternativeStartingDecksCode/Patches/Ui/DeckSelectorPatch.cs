@@ -54,8 +54,9 @@ public class DeckSelectorPatch
 
         var hx = (NDeckHistory?)DeckHistory.LoadScene();
         var relicHx = (NRelicHistory?)RelicHistory.LoadScene();
+        var potionHx = (PotionHistoryExtended?)PotionHistoryExtended.LoadScene();
 
-        if (hx == null || relicHx == null) return;
+        if (hx == null || relicHx == null || potionHx == null) return;
 
         var set = CustomHoverTipSet.CreateAndShowWithContent(owner, [
                 new CustomHoverTip
@@ -68,6 +69,11 @@ public class DeckSelectorPatch
                 {
                     HoverTip = new HoverTip(new LocString("main_menu_ui", "CARD_LIBRARY_RARITY_UNCOMMON")),
                     Content = relicHx
+                },
+                new CustomHoverTip
+                {
+                    HoverTip = new HoverTip(new LocString("main_menu_ui", "CARD_LIBRARY_RARITY_COMMON")),
+                    Content = potionHx
                 }
             ]
         );
@@ -78,6 +84,7 @@ public class DeckSelectorPatch
         relicHx.LoadRelics(tmpPlayer,
             inventory.Relics.Select(c => c.ToMutable().ToSerializable()).Take(10)
         );
+        potionHx.LoadPotions(tmpPlayer, inventory.Potions.ToList());
 
         // Basically, we want to be next to the entry field so we can hover in it?
         set.GlobalPosition = new Vector2(moveToControl.GlobalPosition.X + moveToControl.Size.X + 25f,
