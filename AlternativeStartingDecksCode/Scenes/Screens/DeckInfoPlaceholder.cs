@@ -18,7 +18,7 @@ public static class DeckInfoPlaceholder
         var var_16_oejt8 = PreloadManager.Cache.GetAsset<FontVariation>("res://themes/kreon_regular_shared.tres");
         var var_FontVariation_ueawe = new FontVariation();
         var var_FontVariation_3rwao = new FontVariation();
-        var var_StyleBoxFlat_0gfss = new StyleBoxFlat();
+        var var_StyleBoxFlat_v6rgp = new StyleBoxFlat();
         var var_15_ho10k = PreloadManager.Cache.GetAsset<Script>("res://addons/mega_text/MegaRichTextLabel.cs");
         var var_17_6erg2 = PreloadManager.Cache.GetAsset<Texture2D>("res://images/atlases/ui_atlas.sprites/top_bar/top_bar_heart.tres");
         var var_18_6f3yj = PreloadManager.Cache.GetAsset<Script>("res://addons/mega_text/MegaLabel.cs");

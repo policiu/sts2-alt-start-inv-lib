@@ -1,4 +1,5 @@
-﻿using AlternativeStartingDecks.AlternativeStartingDecksCode.Scenes.Screens;
+﻿using System.Diagnostics;
+using AlternativeStartingDecks.AlternativeStartingDecksCode.Scenes.Screens;
 using AlternativeStartingDecks.AlternativeStartingDecksCode.Utils;
 using BaseLib.Config;
 using Godot;
@@ -31,6 +32,8 @@ public class DeckSelectorPatch
                     "AlternativeStartingDecks was unable to add the Deck Selection to the Character SelectScreen." +
                     "This is likely either due to a recent game update, or mod incompatibility." +
                     $"{e.Message}");
+
+                Debugger.Break();
             }
         }
 
@@ -91,7 +94,7 @@ public class DeckSelectorPatch
             {
                 AlternativeStartingDecksLogger.Warn("Unable to inject the Character SelectScreen. " + "\n" +
                                                     e.Message);
-                AlternativeStartingDecksLogger.Warn(e.StackTrace ?? " ");
+                AlternativeStartingDecksLogger.Warn(e.InnerException?.Message ?? " ");
             }
         }
 
@@ -136,7 +139,7 @@ public class DeckSelectorPatch
             if (character is null) return;
 
             var inventories = StartingInventoryManager.GetStartingInventoriesForCharacter(character);
-
+            var first = true;
             foreach (var inventory in inventories)
             {
                 var deckInfoControl = (Control?)DeckInfoPlaceholderExtended.LoadScene();
@@ -158,7 +161,25 @@ public class DeckSelectorPatch
                 deckHelper.Relics = inventory.Relics.Count().ToString();
                 deckHelper.Potions = inventory.Potions.Count().ToString();
                 deckHelper.Gold = inventory.Gold.ToString();
+
+                // Apply Event
+                deckHelper.Button.Pressed += () => OnDeckPressed(deckHelper);
+
+                if (first)
+                {
+                    deckHelper.SetSelected(true);
+                    first = false;
+                }
             }
+        }
+
+        private static void OnDeckPressed(DeckInfoPlaceholderExtended deck)
+        {
+            foreach (var node in deck.GetParent().FindChildren("*", "", false, false))
+                if (node is DeckInfoPlaceholderExtended otherDeck)
+                    otherDeck.SetSelected(false);
+
+            deck.SetSelected(true);
         }
     }
 }

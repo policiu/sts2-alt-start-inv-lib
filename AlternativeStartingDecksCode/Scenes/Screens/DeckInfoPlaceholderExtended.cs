@@ -11,8 +11,13 @@ public partial class DeckInfoPlaceholderExtended : Control
         PreloadManager.Cache.LoadAsset(
             "res://AlternativeStartingDecksCode/Scenes/Screens/DeckInfoPlaceholderExtended.cs");
 
+    private static readonly StyleBoxFlat SelectedTheme =
+        (StyleBoxFlat)PreloadManager.Cache.LoadAsset("res://AlternativeStartingDecks/themes/selected_theme.tres");
+
     private static readonly string _deckDescriptionNode = "VBoxContainer/DescriptionLabel";
     private static readonly string _deckNameNode = "VBoxContainer/DeckLabel";
+
+    private Theme? _baseTheme;
 
     private string _deckNode = "VBoxContainer/HpGold/Deck";
     private string _goldNode = "VBoxContainer/HpGold/Gold";
@@ -20,6 +25,11 @@ public partial class DeckInfoPlaceholderExtended : Control
     private string _hpNode = "VBoxContainer/HpGold/Hp";
     private string _potionsNode = "VBoxContainer/HpGold/Potions";
     private string _relicsNode = "VBoxContainer/HpGold/Relics";
+
+    // Add static constructor
+    static DeckInfoPlaceholderExtended()
+    {
+    }
 
     public string Hp
     {
@@ -63,14 +73,50 @@ public partial class DeckInfoPlaceholderExtended : Control
         set => GetNode<MegaRichTextLabel>(_deckDescriptionNode).SetTextAutoSize(value);
     }
 
+    public BaseButton Button => GetNode<BaseButton>("Button");
+
+    public override void _Ready()
+    {
+        StartLoopingBorder(CreateTween().SetLoops(), SelectedTheme, 1.0f);
+        base._Ready();
+    }
+
+
+    public void StartLoopingBorder(Tween tween, StyleBoxFlat styleBox, float duration)
+    {
+        if (tween.IsValid()) tween.Kill();
+
+        tween = CreateTween().SetLoops();
+        tween.TweenProperty(styleBox, "border_color:a", 0.0f, duration);
+        tween.TweenProperty(styleBox, "border_color:a", 1.0f, duration);
+    }
+
+    public void SetSelected(bool selected)
+    {
+        if (selected)
+            AddThemeStyleboxOverride("panel", SelectedTheme);
+        else
+            RemoveThemeStyleboxOverride("panel");
+    }
+
+
     public static Node? LoadScene(string name = "DeckInfoPlaceholder")
     {
         var result = DeckInfoPlaceholder.LoadScene(name);
         if (result == null) return null;
 
-        // Update the stupid MegaLabel
-        var children = result.FindChildren("Label", recursive: true);
+        DisableAutoSize(result);
 
+        // Setting Script directly disposes the previous object
+        result = result.SafelySetScript(ThisScript);
+
+        return result;
+    }
+
+    private static void DisableAutoSize(Node result)
+    {
+        // Duplicating removes all script variables, so we need to reapply the important ones (AutoSize off)
+        var children = result.FindChildren("Label", recursive: true);
         foreach (var child in children)
         {
             if (child == null) continue;
@@ -81,7 +127,6 @@ public partial class DeckInfoPlaceholderExtended : Control
             script.MaxFontSize = 100;
         }
 
-        // Update the stupid MegaLabel
         children = [result.GetNode(_deckNameNode), result.GetNode(_deckDescriptionNode)];
 
         foreach (var child in children)
@@ -93,9 +138,5 @@ public partial class DeckInfoPlaceholderExtended : Control
             script.MinFontSize = 28;
             script.MaxFontSize = 28;
         }
-
-        result = result.SafelySetScript(ThisScript);
-
-        return result;
     }
 }

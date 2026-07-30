@@ -4,7 +4,7 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace AlternativeStartingDecks.AlternativeStartingDecksCode;
 
-public readonly struct AlternativeStartingInventory(CharacterModel characterModel, string id)
+public class AlternativeStartingInventory(CharacterModel characterModel, string id)
 {
     public int Hp { get; init; } = characterModel.StartingHp;
     public int Gold { get; init; } = characterModel.StartingGold;

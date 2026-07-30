@@ -10,19 +10,20 @@
 [ext_resource type="Texture2D" uid="uid://boylmf6d6m4ys" path="res://images/ui/game_over_screen/discovery_potion.png" id="21_2hq02"]
 [ext_resource type="Texture2D" uid="uid://bkv3xa2ojn5jk" path="res://images/ui/game_over_screen/discovery_relic.png" id="22_ubig5"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0gfss"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v6rgp"]
 content_margin_left = 0.0
 content_margin_top = 0.0
 content_margin_right = 0.0
 content_margin_bottom = 0.0
 bg_color = Color(0.1, 0.1, 0.1, 0.6)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-corner_detail = 5
-expand_margin_left = 10.0
-expand_margin_right = 10.0
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+expand_margin_left = 5.0
+expand_margin_top = 5.0
+expand_margin_right = 5.0
+expand_margin_bottom = 5.0
 
 [sub_resource type="FontVariation" id="FontVariation_3c48f"]
 base_font = ExtResource("1_7ej3d")
@@ -37,7 +38,9 @@ base_font = ExtResource("1_7ej3d")
 spacing_glyph = 1
 
 [node name="Placeholder" type="PanelContainer"]
-theme_override_styles/panel = SubResource("StyleBoxFlat_0gfss")
+offset_right = 531.0
+offset_bottom = 110.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_v6rgp")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -216,3 +219,8 @@ theme_override_font_sizes/font_size = 28
 text = "99"
 script = ExtResource("18_6f3yj")
 AutoSizeEnabled = false
+
+[node name="Button" type="TextureButton" parent="."]
+layout_mode = 2
+toggle_mode = true
+stretch_mode = 0
