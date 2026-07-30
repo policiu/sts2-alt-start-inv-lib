@@ -53,7 +53,9 @@ public class DeckSelectorPatch
         if (inventory.IsLocked || characterLocked) return;
 
         var hx = (NDeckHistory?)DeckHistory.LoadScene();
-        if (hx == null) return;
+        var relicHx = (NRelicHistory?)RelicHistory.LoadScene();
+
+        if (hx == null || relicHx == null) return;
 
         var set = CustomHoverTipSet.CreateAndShowWithContent(owner, [
                 new CustomHoverTip
@@ -61,19 +63,30 @@ public class DeckSelectorPatch
                     HoverTip = new HoverTip(new LocString("main_menu_ui", "CHARACTER_SELECT.locked.title")
                     ),
                     Content = hx
+                },
+                new CustomHoverTip
+                {
+                    HoverTip = new HoverTip(new LocString("main_menu_ui", "CARD_LIBRARY_RARITY_UNCOMMON")),
+                    Content = relicHx
                 }
             ]
         );
         if (set == null) return;
-        hx.LoadDeck(new Player(characterModel, 0, 0, 0, 0, 0, 0, 0, null, null),
+        var tmpPlayer = new Player(characterModel, 0, 0, 0, 0, 0, 0, 0, null, null);
+        hx.LoadDeck(tmpPlayer,
             inventory.Cards.Select(c => c.ToMutable().ToSerializable()).Take(10));
+        relicHx.LoadRelics(tmpPlayer,
+            inventory.Relics.Select(c => c.ToMutable().ToSerializable()).Take(10)
+        );
 
-        set.GlobalPosition = new Vector2(moveToControl.GlobalPosition.X + moveToControl.Size.X, 45.0f);
+        // Basically, we want to be next to the entry field so we can hover in it?
+        set.GlobalPosition = new Vector2(moveToControl.GlobalPosition.X + moveToControl.Size.X + 25f,
+            Math.Max(45.0f, moveToControl.GlobalPosition.Y - set.Size.Y / 2));
     }
 
     private static void OnHoverLeave()
     {
-        NHoverTipSet.Clear();
+        //NHoverTipSet.Clear();
     }
 
     [HarmonyPatch(typeof(NCharacterSelectScreen), nameof(NCharacterSelectScreen._Ready))]
@@ -254,7 +267,7 @@ public class DeckSelectorPatch
                 // Apply Event
                 deckHelper.Button.MousePressed += _ => OnDeckPressed(deckHelper, inventory, charSelectButton.IsLocked);
                 deckHelper.Button.MouseEntered +=
-                    () => OnHover(screen, deckHelper, charSelectButton._character, inventory,
+                    () => OnHover(deckHelper, deckHelper, charSelectButton._character, inventory,
                         charSelectButton.IsLocked);
                 deckHelper.Button.MouseExited += OnHoverLeave;
 
