@@ -78,7 +78,7 @@ public partial class DeckInfoPlaceholderExtended : Control
     }
 
 
-    public void StartLoopingBorder(Tween tween, StyleBoxFlat styleBox, float duration)
+    private void StartLoopingBorder(Tween tween, StyleBoxFlat styleBox, float duration)
     {
         if (tween.IsValid()) tween.Kill();
 

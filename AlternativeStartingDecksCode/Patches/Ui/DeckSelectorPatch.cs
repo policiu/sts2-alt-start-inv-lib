@@ -105,16 +105,37 @@ public class DeckSelectorPatch
         {
             // If there aren't enough decks, don't show our menu
 
+            if (SetPanelVisibility(screen, characterModel)) return;
+            RunTween(screen);
+            LoadDecks(screen, charSelectButton);
+        }
+
+        private static bool SetPanelVisibility(NCharacterSelectScreen screen, CharacterModel characterModel)
+        {
             var deckInfoPanel = screen.GetNodeOrNull<Control>(DeckInfoName);
+            var infoPanel = screen.GetNodeOrNull<Control>("InfoPanel");
             if (StartingInventoryManager.GetStartingInventoriesForCharacter(characterModel).Count() <= 1)
             {
                 deckInfoPanel?.SetVisible(false);
-                return;
+                foreach (var node in infoPanel.GetChildren())
+                {
+                    var child = (Control?)node;
+
+                    child?.SetVisible(true);
+                }
+
+                return true;
             }
 
             deckInfoPanel?.SetVisible(true);
-            RunTween(screen);
-            LoadDecks(screen, charSelectButton);
+            foreach (var node in infoPanel.GetChildren())
+            {
+                var child = (Control?)node;
+
+                child?.SetVisible(false);
+            }
+
+            return false;
         }
 
 
@@ -129,7 +150,7 @@ public class DeckSelectorPatch
 
             _deckInfoTween.TweenProperty(deckInfoPanel, (NodePath)"position", deckInfoPanel.Position, 0.5)
                 .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Expo)
-                .From(deckInfoPanel.Position + new Vector2(300f, 0.0f));
+                .From(deckInfoPanel.Position + new Vector2(-300f, 0.0f));
         }
 
         private static void LoadDecks(NCharacterSelectScreen screen, NCharacterSelectButton charSelectButton)
