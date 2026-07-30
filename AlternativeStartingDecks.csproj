@@ -54,6 +54,7 @@
         <EmbeddedResource Remove="images/**"/>
         <Compile Remove="Tools\obj\**"/>
         <EmbeddedResource Remove="Tools\obj\**"/>
+        <Compile Remove="AlternativeStartingDecksCode\Patches\Utils\MessCharSelectPatch.cs"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -62,6 +63,10 @@
         <None Include="AlternativeStartingDecks.json"/>
         <None Include="project.godot"/>
         <None Include="AlternativeStartingDecks/**"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="AlternativeStartingDecks\localization\eng\"/>
     </ItemGroup>
 
     <Target Name="CheckDependencyPaths">

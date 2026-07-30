@@ -3,6 +3,7 @@ using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Runs;
 using MegaCrit.Sts2.Core.Saves;
+using MegaCrit.Sts2.Core.Unlocks;
 
 namespace AlternativeStartingDecks.AlternativeStartingDecksCode.Patches.Utils;
 
@@ -33,7 +34,7 @@ public class StartingDeckReplacement
         }
         catch (Exception ex)
         {
-            AlternativeStartingDecksLogger.Warn("Failed to replace deck: " + ex.InnerException);
+            AlternativeStartingDecksLogger.Warn("Failed to replace deck: \n" + ex.Message + "\n" + ex.InnerException);
             __instance.Deck.Clear();
             __instance._potionSlots.ForEach(pot => pot?.Discard());
             // Probably major problems here
@@ -74,8 +75,29 @@ public class StartingDeckReplacement
     {
         foreach (var r in potions)
         {
-            r.ToMutable();
-            player.AddPotionInternal(r);
+            var rMut = r.ToMutable();
+            player.AddPotionInternal(rMut);
         }
+    }
+}
+
+[HarmonyPatch(typeof(Player), nameof(Player.CreateForNewRun), typeof(CharacterModel), typeof(UnlockState),
+    typeof(ulong))]
+public class CreateForNewRunPatch
+{
+    [HarmonyPostfix]
+    public static void CreateForNewRunPostfix(ref Player __result,
+        CharacterModel character,
+        UnlockState unlockState,
+        ulong netId)
+    {
+        var inventory = AlternativeStartingDecksGlobals.StartingInventory;
+        if (inventory is null) return;
+
+        __result.Creature.SetMaxHpInternal(inventory.Hp);
+        __result.Creature.SetCurrentHpInternal(inventory.Hp);
+
+        // Bypass Event... probably
+        __result._gold = inventory.Gold;
     }
 }
