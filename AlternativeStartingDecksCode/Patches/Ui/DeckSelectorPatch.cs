@@ -163,7 +163,7 @@ public class DeckSelectorPatch
                 deckHelper.Gold = inventory.Gold.ToString();
 
                 // Apply Event
-                deckHelper.Button.Pressed += () => OnDeckPressed(deckHelper);
+                deckHelper.Button.Pressed += () => OnDeckPressed(deckHelper, inventory);
 
                 if (first)
                 {
@@ -173,13 +173,14 @@ public class DeckSelectorPatch
             }
         }
 
-        private static void OnDeckPressed(DeckInfoPlaceholderExtended deck)
+        private static void OnDeckPressed(DeckInfoPlaceholderExtended deck, AlternativeStartingInventory inventory)
         {
             foreach (var node in deck.GetParent().FindChildren("*", "", false, false))
                 if (node is DeckInfoPlaceholderExtended otherDeck)
                     otherDeck.SetSelected(false);
 
             deck.SetSelected(true);
+            AlternativeStartingDecksGlobals.StartingInventory = inventory;
         }
     }
 }
