@@ -46,9 +46,11 @@ public class DeckSelectorPatch
     }
 
     private static void OnHover(Control owner, Control moveToControl, CharacterModel characterModel,
-        AlternativeStartingInventory inventory)
+        AlternativeStartingInventory inventory, bool characterLocked)
     {
         NHoverTipSet.Clear();
+
+        if (inventory.IsLocked || characterLocked) return;
 
         var hx = (NDeckHistory?)DeckHistory.LoadScene();
         if (hx == null) return;
@@ -64,9 +66,14 @@ public class DeckSelectorPatch
         );
         if (set == null) return;
         hx.LoadDeck(new Player(characterModel, 0, 0, 0, 0, 0, 0, 0, null, null),
-            inventory.Cards.Select(c => c.ToMutable().ToSerializable()));
+            inventory.Cards.Select(c => c.ToMutable().ToSerializable()).Take(10));
 
         set.GlobalPosition = new Vector2(moveToControl.GlobalPosition.X + moveToControl.Size.X, 45.0f);
+    }
+
+    private static void OnHoverLeave()
+    {
+        NHoverTipSet.Clear();
     }
 
     [HarmonyPatch(typeof(NCharacterSelectScreen), nameof(NCharacterSelectScreen._Ready))]
@@ -164,7 +171,10 @@ public class DeckSelectorPatch
         {
             var deckInfoPanel = screen.GetNodeOrNull<Control>(DeckInfoName);
             var infoPanel = screen.GetNodeOrNull<Control>("InfoPanel");
-            if (StartingInventoryManager.GetStartingInventoriesForCharacter(characterModel).Count() <= 1)
+            var inventories = StartingInventoryManager.GetStartingInventoriesForCharacter(characterModel);
+
+
+            if (inventories.Count == 0 || (inventories.Count == 1 && inventories.First().Id == "default"))
             {
                 deckInfoPanel?.SetVisible(false);
                 foreach (var node in infoPanel.GetChildren())
@@ -244,7 +254,9 @@ public class DeckSelectorPatch
                 // Apply Event
                 deckHelper.Button.MousePressed += _ => OnDeckPressed(deckHelper, inventory, charSelectButton.IsLocked);
                 deckHelper.Button.MouseEntered +=
-                    () => OnHover(screen, deckHelper, charSelectButton._character, inventory);
+                    () => OnHover(screen, deckHelper, charSelectButton._character, inventory,
+                        charSelectButton.IsLocked);
+                deckHelper.Button.MouseExited += OnHoverLeave;
 
                 if (first)
                 {
