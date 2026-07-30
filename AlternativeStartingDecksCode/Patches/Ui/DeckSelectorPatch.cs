@@ -104,7 +104,15 @@ public class DeckSelectorPatch
             NCharacterSelectButton charSelectButton, CharacterModel characterModel)
         {
             // If there aren't enough decks, don't show our menu
-            if (StartingInventoryManager.GetStartingInventoriesForCharacter(characterModel).Count() <= 1) return;
+
+            var deckInfoPanel = screen.GetNodeOrNull<Control>(DeckInfoName);
+            if (StartingInventoryManager.GetStartingInventoriesForCharacter(characterModel).Count() <= 1)
+            {
+                deckInfoPanel?.SetVisible(false);
+                return;
+            }
+
+            deckInfoPanel?.SetVisible(true);
             RunTween(screen);
             LoadDecks(screen, charSelectButton);
         }
