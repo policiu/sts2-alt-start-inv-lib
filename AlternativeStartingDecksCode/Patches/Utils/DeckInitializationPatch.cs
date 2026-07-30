@@ -4,6 +4,8 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Cards;
 using MegaCrit.Sts2.Core.Models.Potions;
 using MegaCrit.Sts2.Core.Models.Relics;
+using MegaCrit.Sts2.Core.Timeline;
+using MegaCrit.Sts2.Core.Timeline.Epochs;
 
 namespace AlternativeStartingDecks.AlternativeStartingDecksCode.Patches.Utils;
 
@@ -24,7 +26,8 @@ internal class DeckInitializationPatch
             });
 
         StartingInventoryManager.AddNewInventoryForCharacter(ModelDb.AllCharacters.First(),
-            new AlternativeStartingInventory(ModelDb.AllCharacters.First(), "example2")
+            new AlternativeStartingInventory(ModelDb.AllCharacters.First(), "example2",
+                EpochModel.Get<Ironclad2Epoch>())
             {
                 Gold = 20,
                 Hp = 3,
@@ -32,6 +35,12 @@ internal class DeckInitializationPatch
                 Description = "As hard as possible",
                 Relics = [ModelDb.Relic<Anchor>(), ModelDb.Relic<Pear>()],
                 Potions = [ModelDb.Potion<HeartOfIron>()]
+            });
+
+        StartingInventoryManager.AddNewInventoryForCharacter(ModelDb.AllCharacters.Last(),
+            new AlternativeStartingInventory(ModelDb.AllCharacters.Last(), "example-3")
+            {
+                Name = "Example"
             });
     }
 }

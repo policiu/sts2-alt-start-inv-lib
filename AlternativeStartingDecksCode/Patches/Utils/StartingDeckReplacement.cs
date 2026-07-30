@@ -23,7 +23,13 @@ public class StartingDeckReplacement
         try
         {
             var startingInventory = AlternativeStartingDecksGlobals.StartingInventory;
-            if (startingInventory == null) return false;
+            if (startingInventory == null)
+            {
+                AlternativeStartingDecksLogger.Warn(
+                    "Tried to replace deck with null inventory! Defaulting to standard inventory.");
+                return true;
+            }
+
             // TODO: Maybe check for all nulls?
             ReplaceDeck(__instance, startingInventory.Cards);
             ReplaceRelics(__instance, startingInventory.Relics);

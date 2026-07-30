@@ -19,6 +19,27 @@ internal static class SharedUi
 
 public class DeckSelectorPatch
 {
+    private static void OnDeckPressed(DeckInfoPlaceholderExtended deck, AlternativeStartingInventory inventory,
+        bool isCharacterLocked)
+    {
+        // Prevent if locked :)
+        if (isCharacterLocked)
+        {
+            AlternativeStartingDecksGlobals.StartingInventory = null;
+            return;
+        }
+
+        if (inventory.IsLocked) return;
+
+
+        foreach (var node in deck.GetParent().FindChildren("*", "", false, false))
+            if (node is DeckInfoPlaceholderExtended otherDeck)
+                otherDeck.SetSelected(false);
+
+        deck.SetSelected(true);
+        AlternativeStartingDecksGlobals.StartingInventory = inventory;
+    }
+
     [HarmonyPatch(typeof(NCharacterSelectScreen), nameof(NCharacterSelectScreen._Ready))]
     public static class ReadyPatch
     {
@@ -139,6 +160,9 @@ public class DeckSelectorPatch
         }
 
 
+        /// <summary>
+        ///     Slide into view
+        /// </summary>
         private static void RunTween(NCharacterSelectScreen screen)
         {
             var deckInfoPanel = screen.GetNodeOrNull<Control>(DeckInfoName);
@@ -157,6 +181,9 @@ public class DeckSelectorPatch
         {
             var deckInfoPanel = screen.GetNodeOrNull<Control>(DeckInfoName);
             var container = deckInfoPanel.GetNodeOrNull<Control>("VBoxContainer/ScrollContainer/VBoxContainer");
+
+            // Clear our overrides in case something goes wrong
+            AlternativeStartingDecksGlobals.StartingInventory = null;
 
             if (container == null) return;
             foreach (var child in container.GetChildren())
@@ -180,23 +207,52 @@ public class DeckSelectorPatch
                 var deckHelper = (DeckInfoPlaceholderExtended)deckInfoControl;
                 deckHelper.SetVisible(true);
 
-                SetupDeckStrings(deckHelper, inventory, charSelectButton.IsLocked);
+                // Might be slow? Should profile?
+                // Prob fine, it's just a menu :)
+                SetupDeckStrings(deckHelper, charSelectButton.Character, inventory, charSelectButton.IsLocked,
+                    inventory.IsLocked);
 
                 // Apply Event
-                deckHelper.Button.MousePressed += _ => OnDeckPressed(deckHelper, inventory);
+                deckHelper.Button.MousePressed += _ => OnDeckPressed(deckHelper, inventory, charSelectButton.IsLocked);
 
                 if (first)
                 {
-                    deckHelper.SetSelected(true);
+                    // Make sure to apply first deck
+                    OnDeckPressed(deckHelper, inventory, charSelectButton.IsLocked);
                     first = false;
                 }
             }
         }
 
         private static void SetupDeckStrings(DeckInfoPlaceholderExtended deckHelper,
-            AlternativeStartingInventory inventory, bool isLocked)
+            CharacterModel character,
+            AlternativeStartingInventory inventory, bool characterIsLocked, bool inventoryIsLocked)
         {
-            if (!isLocked)
+            if (characterIsLocked)
+            {
+                deckHelper.DeckName =
+                    new LocString("main_menu_ui", "CHARACTER_SELECT.locked.title").GetFormattedText();
+                deckHelper.DeckDescription = character.GetUnlockText().GetFormattedText();
+                deckHelper.Hp = "??/??";
+                deckHelper.Gold = "???";
+                deckHelper.Relics = "???";
+                deckHelper.Potions = "???";
+                deckHelper.Deck = "???";
+            }
+
+            else if (inventoryIsLocked)
+            {
+                deckHelper.DeckName =
+                    new LocString("main_menu_ui", "CHARACTER_SELECT.locked.title").GetFormattedText();
+                deckHelper.DeckDescription = inventory.UnlockText;
+                deckHelper.Hp = "??/??";
+                deckHelper.Gold = "???";
+                deckHelper.Relics = "???";
+                deckHelper.Potions = "???";
+                deckHelper.Deck = "???";
+            }
+            else
+
             {
                 deckHelper.DeckName = inventory.Name;
 
@@ -208,27 +264,6 @@ public class DeckSelectorPatch
                 deckHelper.Potions = inventory.Potions.Count().ToString();
                 deckHelper.Gold = inventory.Gold.ToString();
             }
-            else
-            {
-                deckHelper.DeckName =
-                    new LocString("main_menu_ui", "CHARACTER_SELECT.locked.title").GetFormattedText();
-                deckHelper.DeckDescription = inventory.UnlockText;
-                deckHelper.Hp = "??/??";
-                deckHelper.Gold = "???";
-                deckHelper.Relics = "???";
-                deckHelper.Potions = "???";
-                deckHelper.Deck = "???";
-            }
-        }
-
-        private static void OnDeckPressed(DeckInfoPlaceholderExtended deck, AlternativeStartingInventory inventory)
-        {
-            foreach (var node in deck.GetParent().FindChildren("*", "", false, false))
-                if (node is DeckInfoPlaceholderExtended otherDeck)
-                    otherDeck.SetSelected(false);
-
-            deck.SetSelected(true);
-            AlternativeStartingDecksGlobals.StartingInventory = inventory;
         }
     }
 }
