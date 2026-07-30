@@ -19,6 +19,7 @@ public class AlternativeStartingInventory(CharacterModel characterModel, string 
         new LocString("characters", characterModel.CharacterSelectTitle).GetFormattedText();
 
     public string Id { get; } = id;
+    public string UnlockText { get; } = characterModel.GetUnlockText().GetFormattedText();
 }
 
 public static class AlternativeStartingDecksLogger

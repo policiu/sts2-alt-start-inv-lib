@@ -4,6 +4,8 @@ using AlternativeStartingDecks.AlternativeStartingDecksCode.Utils;
 using BaseLib.Config;
 using Godot;
 using HarmonyLib;
+using MegaCrit.Sts2.Core.Localization;
+using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Screens.CharacterSelect;
 using Timer = Godot.Timer;
 
@@ -55,7 +57,6 @@ public class DeckSelectorPatch
             button.CustomMinimumSize = new Vector2(150, 50);
             button.Position = new Vector2(-940, -1000);
             screen.GetNodeOrNull("CharSelectButtons/ButtonContainer")?.AddSibling(button);
-            var a = screen.GetNodeOrNull<Button>("CharSelectButtons");
             button.MouseEntered += Clicked;
             SharedUi.Button = button;
 
@@ -81,14 +82,15 @@ public class DeckSelectorPatch
         private static Tween? _deckInfoTween;
         private static Vector2 _deckInfoPosition;
 
-        private static readonly string _deckInfoName = "DeckInfoPanel";
+        private static readonly string DeckInfoName = "DeckInfoPanel";
 
         [HarmonyPostfix]
-        public static void Postfix(NCharacterSelectScreen __instance)
+        public static void Postfix(NCharacterSelectScreen __instance, NCharacterSelectButton charSelectButton,
+            CharacterModel characterModel)
         {
             try
             {
-                InjectSelectCharacter(__instance);
+                InjectSelectCharacter(__instance, charSelectButton, characterModel);
             }
             catch (Exception e)
             {
@@ -98,16 +100,19 @@ public class DeckSelectorPatch
             }
         }
 
-        private static void InjectSelectCharacter(NCharacterSelectScreen screen)
+        private static void InjectSelectCharacter(NCharacterSelectScreen screen,
+            NCharacterSelectButton charSelectButton, CharacterModel characterModel)
         {
+            // If there aren't enough decks, don't show our menu
+            if (StartingInventoryManager.GetStartingInventoriesForCharacter(characterModel).Count() <= 1) return;
             RunTween(screen);
-            LoadDecks(screen);
+            LoadDecks(screen, charSelectButton);
         }
 
 
         private static void RunTween(NCharacterSelectScreen screen)
         {
-            var deckInfoPanel = screen.GetNodeOrNull<Control>(_deckInfoName);
+            var deckInfoPanel = screen.GetNodeOrNull<Control>(DeckInfoName);
             if (deckInfoPanel == null) return;
             if (_deckInfoTween != null) deckInfoPanel.Position = _deckInfoPosition;
             _deckInfoPosition = deckInfoPanel.Position;
@@ -119,15 +124,9 @@ public class DeckSelectorPatch
                 .From(deckInfoPanel.Position + new Vector2(300f, 0.0f));
         }
 
-        private static void LoadDecks(NCharacterSelectScreen screen)
+        private static void LoadDecks(NCharacterSelectScreen screen, NCharacterSelectButton charSelectButton)
         {
-            var oldControl = screen.GetNodeOrNull<Control>(_deckInfoName);
-            PopulateDecksInPanel(screen, oldControl);
-        }
-
-
-        private static void PopulateDecksInPanel(NCharacterSelectScreen screen, Control deckInfoPanel)
-        {
+            var deckInfoPanel = screen.GetNodeOrNull<Control>(DeckInfoName);
             var container = deckInfoPanel.GetNodeOrNull<Control>("VBoxContainer/ScrollContainer/VBoxContainer");
 
             if (container == null) return;
@@ -152,15 +151,7 @@ public class DeckSelectorPatch
                 var deckHelper = (DeckInfoPlaceholderExtended)deckInfoControl;
                 deckHelper.SetVisible(true);
 
-                deckHelper.DeckName = inventory.Name;
-
-                deckHelper.DeckDescription = inventory.Description;
-
-                deckHelper.Deck = inventory.Cards.Count().ToString();
-                deckHelper.Hp = $"{inventory.Hp.ToString()}/{inventory.Hp.ToString()}";
-                deckHelper.Relics = inventory.Relics.Count().ToString();
-                deckHelper.Potions = inventory.Potions.Count().ToString();
-                deckHelper.Gold = inventory.Gold.ToString();
+                SetupDeckStrings(deckHelper, inventory, charSelectButton.IsLocked);
 
                 // Apply Event
                 deckHelper.Button.Pressed += () => OnDeckPressed(deckHelper, inventory);
@@ -170,6 +161,34 @@ public class DeckSelectorPatch
                     deckHelper.SetSelected(true);
                     first = false;
                 }
+            }
+        }
+
+        private static void SetupDeckStrings(DeckInfoPlaceholderExtended deckHelper,
+            AlternativeStartingInventory inventory, bool isLocked)
+        {
+            if (!isLocked)
+            {
+                deckHelper.DeckName = inventory.Name;
+
+                deckHelper.DeckDescription = inventory.Description;
+
+                deckHelper.Deck = inventory.Cards.Count().ToString();
+                deckHelper.Hp = $"{inventory.Hp.ToString()}/{inventory.Hp.ToString()}";
+                deckHelper.Relics = inventory.Relics.Count().ToString();
+                deckHelper.Potions = inventory.Potions.Count().ToString();
+                deckHelper.Gold = inventory.Gold.ToString();
+            }
+            else
+            {
+                deckHelper.DeckName =
+                    new LocString("main_menu_ui", "CHARACTER_SELECT.locked.title").GetFormattedText();
+                deckHelper.DeckDescription = inventory.UnlockText;
+                deckHelper.Hp = "??/??";
+                deckHelper.Gold = "???";
+                deckHelper.Relics = "???";
+                deckHelper.Potions = "???";
+                deckHelper.Deck = "???";
             }
         }
 
@@ -186,7 +205,7 @@ public class DeckSelectorPatch
 }
 
 [HarmonyPatch(nameof(NCharacterSelectButton), nameof(NCharacterSelectButton.Select))]
-public static class NCharacterSelectButton_Select
+public static class NCharacterSelectButtonSelectPatch
 {
     public static void Postfix(NCharacterSelectButton __instance)
     {
