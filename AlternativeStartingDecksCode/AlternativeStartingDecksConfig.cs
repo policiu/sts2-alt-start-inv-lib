@@ -26,6 +26,8 @@ public static class AlternativeStartingDecksLogger
 
 internal class AlternativeStartingDecksConfig : SimpleModConfig
 {
+    public static int MaxItemsToShow { get; set; } = 25;
+
     /// <summary>
     ///     List of Starting Inventories by Character
     /// </summary>

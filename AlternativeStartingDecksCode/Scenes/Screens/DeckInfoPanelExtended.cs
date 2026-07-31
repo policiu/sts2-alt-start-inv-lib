@@ -89,7 +89,8 @@ public partial class DeckInfoPanelExtended : Control
             }
 
             _deckHistory?.LoadDeck(tmpPlayer,
-                inventory.Cards.Select(c => c.ToMutable().ToSerializable()).Take(25));
+                inventory.Cards.Select(c => c.ToMutable().ToSerializable())
+                    .Take(AlternativeStartingDecksConfig.MaxItemsToShow));
 
             _deckHistoryContainer?.Show();
         }
@@ -109,7 +110,8 @@ public partial class DeckInfoPanelExtended : Control
             }
 
             _relicHistory?.LoadRelics(tmpPlayer,
-                inventory.Relics.Select(c => c.ToMutable().ToSerializable()).Take(25)
+                inventory.Relics.Select(c => c.ToMutable().ToSerializable())
+                    .Take(AlternativeStartingDecksConfig.MaxItemsToShow)
             );
             _relicHistoryContainer?.Show();
         }
