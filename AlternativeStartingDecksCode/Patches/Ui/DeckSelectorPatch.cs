@@ -19,7 +19,7 @@ internal static class SharedUi
 
 public class DeckSelectorPatch
 {
-    private static void OnDeckPressed(DeckInfoPanelExtended panel, DeckInfoPlaceholderExtended deck,
+    private static bool OnDeckPressed(DeckInfoPanelExtended panel, DeckInfoPlaceholderExtended deck,
         StartingInventory inventory,
         CharacterModel characterModel, bool isCharacterLocked)
     {
@@ -27,10 +27,10 @@ public class DeckSelectorPatch
         if (isCharacterLocked)
         {
             AlternativeStartingDecksGlobals.StartingInventory = null;
-            return;
+            return false;
         }
 
-        if (inventory.IsLocked) return;
+        if (inventory.IsLocked) return false;
 
         foreach (var node in deck.GetParent().FindChildren("*", "", false, false))
             if (node is DeckInfoPlaceholderExtended otherDeck)
@@ -39,6 +39,7 @@ public class DeckSelectorPatch
         panel.ShowDeckInformation(inventory, characterModel);
         deck.SetSelected(true);
         AlternativeStartingDecksGlobals.StartingInventory = inventory;
+        return true;
     }
 
     [HarmonyPatch(typeof(NCharacterSelectScreen), nameof(NCharacterSelectScreen._Ready))]
@@ -198,9 +199,10 @@ public class DeckSelectorPatch
             if (character is null) return;
 
             var inventories = StartingInventoryManager.GetStartingInventoriesForCharacter(character);
-            var first = true;
+            var isFirstVisibleDeckSelected = false;
             foreach (var inventory in inventories)
             {
+                if (inventory.IsHidden) continue;
                 var deckInfoControl = (Control?)DeckInfoPlaceholderExtended.LoadScene();
                 if (deckInfoControl == null) continue;
                 deckInfoControl.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
@@ -219,14 +221,15 @@ public class DeckSelectorPatch
                 // Apply Event
                 deckHelper.Button.MousePressed += _ => OnDeckPressed(deckInfoPanel, deckHelper, inventory,
                     charSelectButton._character, charSelectButton.IsLocked);
-                if (first)
-                {
+                if (!isFirstVisibleDeckSelected)
                     // Make sure to apply first deck
-                    OnDeckPressed(deckInfoPanel, deckHelper, inventory, charSelectButton._character,
+                    isFirstVisibleDeckSelected = OnDeckPressed(deckInfoPanel, deckHelper, inventory,
+                        charSelectButton._character,
                         charSelectButton.IsLocked);
-                    first = false;
-                }
             }
+
+            // We didn't show any decks
+            if (!isFirstVisibleDeckSelected) deckInfoPanel.HideDeckInformation();
         }
 
         private static void SetupDeckStrings(DeckInfoPlaceholderExtended deckHelper,
