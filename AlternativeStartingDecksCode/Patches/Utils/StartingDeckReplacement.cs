@@ -12,6 +12,8 @@ public class StartingDeckReplacement
 {
     public static bool Prefix(Player __instance)
     {
+        if (__instance.NetId != AlternativeStartingDecksGlobals.NetId) return true;
+
         // Copied from base since we aren't calling 'em
         // Surely this causes *no* problems
         if (__instance.IsInventoryPopulated)
@@ -99,6 +101,8 @@ public class CreateForNewRunPatch
     {
         var inventory = AlternativeStartingDecksGlobals.StartingInventory;
         if (inventory is null) return;
+        AlternativeStartingDecksLogger.Warn($"Launching with deck {inventory.Name} for netId {netId}");
+        if (__result.NetId != AlternativeStartingDecksGlobals.NetId) return;
 
         __result.Creature.SetMaxHpInternal(inventory.Hp);
         __result.Creature.SetCurrentHpInternal(inventory.Hp);

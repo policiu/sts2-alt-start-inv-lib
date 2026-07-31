@@ -56,6 +56,7 @@ public partial class DeckInfoPanelExtended : Control
         if (button != null)
         {
             button._Ready();
+            button._EnterTree();
             button.Enable();
             button.MouseReleased += e =>
             {

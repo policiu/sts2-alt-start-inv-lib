@@ -80,6 +80,7 @@ public class DeckSelectorPatch
         {
             try
             {
+                AlternativeStartingDecksGlobals.NetId = __instance.Lobby.NetService.NetId;
                 InjectSelectCharacter(__instance, charSelectButton, characterModel);
             }
             catch (Exception e)
