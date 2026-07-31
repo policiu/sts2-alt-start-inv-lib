@@ -24,7 +24,6 @@ public static class DeckInfoPanel
         var var_4_ig1cs = PreloadManager.Cache.GetAsset<FontVariation>("res://themes/kreon_regular_glyph_space_one.tres");
         var var_5_l70hg = PreloadManager.Cache.GetAsset<FontVariation>("res://themes/kreon_bold_glyph_space_one.tres");
         var var_6_qi74u = PreloadManager.Cache.GetAsset<Script>("res://addons/mega_text/MegaRichTextLabel.cs");
-        var var_4_acp43 = PreloadManager.Cache.GetAsset<Script>("res://src/Core/Nodes/CommonUi/NBackButton.cs");
         var var_5_s8klb = PreloadManager.Cache.GetAsset<Texture2D>("res://images/atlases/ui_atlas.sprites/back_button.tres");
         var var_6_lh5hm = PreloadManager.Cache.GetAsset<Material>("res://themes/canvas_item_material_additive_shared.tres");
         var var_7_ig1cs = PreloadManager.Cache.GetAsset<Texture2D>("res://images/atlases/compressed.sprites/back_button_outline.tres");
@@ -39,7 +38,6 @@ public static class DeckInfoPanel
         result.GetNode<RichTextLabel>("DeckInformation/ScrollContainer/VBoxContainer/PotionAndHeaderContainer/Header").AddThemeFontOverride("normal_font", var_4_ig1cs);
         result.GetNode<RichTextLabel>("DeckInformation/ScrollContainer/VBoxContainer/PotionAndHeaderContainer/Header").AddThemeFontOverride("bold_font", var_5_l70hg);
         result.GetNode<RichTextLabel>("DeckInformation/ScrollContainer/VBoxContainer/PotionAndHeaderContainer/Header").SafelySetScript(var_6_qi74u);
-        result.GetNode<Control>("DeckInformation/BackButton").SafelySetScript(var_4_acp43);
         result.GetNode<TextureRect>("DeckInformation/BackButton/Shadow").Texture = var_5_s8klb;
         result.GetNode<TextureRect>("DeckInformation/BackButton/Outline").Texture = var_7_ig1cs;
         result.GetNode<TextureRect>("DeckInformation/BackButton/Image").Texture = var_5_s8klb;

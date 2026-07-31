@@ -1,10 +1,10 @@
-﻿using AlternativeStartingDecks.AlternativeStartingDecksCode.Patches.Utils;
+﻿using AlternativeStartingDecks.AlternativeStartingDecksCode.Nodes.CommonUi;
+using AlternativeStartingDecks.AlternativeStartingDecksCode.Patches.Utils;
 using Godot;
 using MegaCrit.Sts2.addons.mega_text;
 using MegaCrit.Sts2.Core.Assets;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Models;
-using MegaCrit.Sts2.Core.Nodes.CommonUi;
 using MegaCrit.Sts2.Core.Nodes.Screens.RunHistoryScreen;
 
 namespace AlternativeStartingDecks.AlternativeStartingDecksCode.Scenes.Screens;
@@ -46,6 +46,19 @@ public partial class DeckInfoPanelExtended : Control
         _potionHistoryContainer =
             GetNode<Control>("DeckInformation/ScrollContainer/VBoxContainer/PotionAndHeaderContainer/PotionContainer");
         _relicHistoryContainer = GetNode<Control>("DeckInformation/ScrollContainer/VBoxContainer/RelicContainer");
+
+        var button = (CancelButtonVertical?)GetNode<Control>("DeckInformation/BackButton")
+            .SafelySetScript(PreloadManager.Cache.GetAsset(
+                "res://AlternativeStartingDecksCode/Nodes/CommonUi/CancelButtonVertical.cs"));
+        if (button != null)
+        {
+            button._Ready();
+            button.Enable();
+            button.MouseReleased += e =>
+            {
+                if (button._isHovered) _deckInformation.Hide();
+            };
+        }
     }
 
 
@@ -111,6 +124,7 @@ public partial class DeckInfoPanelExtended : Control
 
             _potionHistory?.LoadPotions(tmpPlayer, inventory.Potions.ToList());
             ((Control?)_potionHistoryContainer?.GetParent())?.Show();
+            GetNode<CancelButtonVertical>("DeckInformation/BackButton").Enable();
         }
         else
         {
@@ -121,7 +135,6 @@ public partial class DeckInfoPanelExtended : Control
     public void ShowDeckInformation(AlternativeStartingInventory inventory, CharacterModel characterModel)
     {
         LoadDeckInformation(inventory, characterModel);
-        GetNode<NBackButton>("DeckInformation/BackButton").Enable();
         _deckInformation?.Show();
     }
 
