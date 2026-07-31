@@ -13,13 +13,24 @@ public partial class DeckInfoPlaceholderExtended : Control
 
     private Theme? _baseTheme;
 
+    private Control? _buttonImage;
+
     private string _deckNode = "VBoxContainer/HpGold/Deck";
     private string _goldNode = "VBoxContainer/HpGold/Gold";
+    private Tween? _hoverTween;
 
     private string _hpNode = "VBoxContainer/HpGold/Hp";
+    private Color _originalColor;
+    private Vector2 _originalHoverScale;
+    private Control? _outline;
     private string _potionsNode = "VBoxContainer/HpGold/Potions";
     private string _relicsNode = "VBoxContainer/HpGold/Relics";
     private StyleBoxFlat? _selectedTheme;
+
+    // Style
+    public Color DownColor = Colors.Gray;
+    public Color OutlineColor = new("C0C0C0");
+    public Color OutlineTransparentColor = new("FF000000");
 
     // Add static constructor
     static DeckInfoPlaceholderExtended()
@@ -75,6 +86,14 @@ public partial class DeckInfoPlaceholderExtended : Control
         _selectedTheme =
             (StyleBoxFlat?)PreloadManager.Cache.LoadAsset("res://AlternativeStartingDecks/themes/selected_theme.tres");
         if (_selectedTheme != null) StartLoopingBorder(CreateTween().SetLoops(), _selectedTheme, 1.0f);
+        _originalHoverScale = Scale;
+        _originalColor = Modulate;
+
+        Button.MouseEntered += OnFocus;
+        Button.FocusEntered += OnFocus;
+        Button.MouseExited += OnUnfocus;
+        Button.FocusExited += OnUnfocus;
+
         base._Ready();
     }
 
@@ -136,5 +155,35 @@ public partial class DeckInfoPlaceholderExtended : Control
             script.MinFontSize = 28;
             script.MaxFontSize = 28;
         }
+    }
+
+    protected void OnFocus()
+    {
+        _hoverTween?.Kill();
+        _hoverTween = CreateTween().SetParallel();
+        _hoverTween.TweenProperty(this, (NodePath)"modulate", OutlineColor, 0.05);
+    }
+
+    protected void OnUnfocus()
+    {
+        _hoverTween?.Kill();
+        _hoverTween = CreateTween().SetParallel();
+        _hoverTween.TweenProperty(this, (NodePath)"modulate", _originalColor, 0.05);
+    }
+
+    protected void OnPress()
+    {
+        _hoverTween?.Kill();
+        _hoverTween = CreateTween().SetParallel();
+        _hoverTween.TweenProperty(this, (NodePath)"scale", _originalHoverScale * .9f, 0.25)
+            .SetTrans(Tween.TransitionType.Expo).SetEase(Tween.EaseType.Out);
+    }
+
+    protected void OnUnpress()
+    {
+        _hoverTween?.Kill();
+        _hoverTween = CreateTween().SetParallel();
+        _hoverTween.TweenProperty(this, (NodePath)"scale", _originalHoverScale, 0.25)
+            .SetTrans(Tween.TransitionType.Expo).SetEase(Tween.EaseType.Out);
     }
 }
