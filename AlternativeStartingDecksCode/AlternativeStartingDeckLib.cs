@@ -10,7 +10,7 @@ using Logger = MegaCrit.Sts2.Core.Logging.Logger;
 namespace AlternativeStartingDecks.AlternativeStartingDecksCode;
 
 [ModInitializer(nameof(Initialize))]
-public partial class MainFile : Node
+public partial class AlternativeStartingDeckLib : Node
 {
     public const string ModId = "AlternativeStartingDecks"; //Used for resource filepath
     public const string ResPath = $"res://{ModId}";

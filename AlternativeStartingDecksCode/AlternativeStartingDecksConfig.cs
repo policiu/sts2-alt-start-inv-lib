@@ -5,9 +5,22 @@ namespace AlternativeStartingDecks.AlternativeStartingDecksCode;
 
 public static class AlternativeStartingDecksLogger
 {
-    public static void Warn(string message)
+    /// <inheritdoc cref="M:BaseLib.Config.ModConfig.ModConfigLogger.Warn(System.String,System.Boolean)" />
+    public static void Warn(string message, bool showInGui = false)
     {
-        ModConfig.ModConfigLogger.Warn("[AlternativeStartingDecks] " + message);
+        AlternativeStartingDeckLib.Logger.Warn(message);
+        if (!showInGui || ModConfig.ModConfigLogger.PendingUserMessages.Contains(message))
+            return;
+        ModConfig.ModConfigLogger.PendingUserMessages.Add(message);
+    }
+
+    /// <inheritdoc cref="M:BaseLib.Config.ModConfig.ModConfigLogger.Warn(System.String,System.Boolean)" />
+    public static void Error(string message, bool showInGui = true)
+    {
+        AlternativeStartingDeckLib.Logger.Error(message);
+        if (!showInGui || ModConfig.ModConfigLogger.PendingUserMessages.Contains(message))
+            return;
+        ModConfig.ModConfigLogger.PendingUserMessages.Add(message);
     }
 }
 
