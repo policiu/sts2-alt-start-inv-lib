@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlternativeStartingDecks", "AlternativeStartingDecks.csproj", "{465497CB-A72C-4F79-BC5C-4D1D3245820F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlternativeStartingInventory", "AlternativeStartingInventory.csproj", "{465497CB-A72C-4F79-BC5C-4D1D3245820F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools", "Tools\Tools.csproj", "{C6170FC6-4C8F-46E3-B6C3-AEA104477525}"
 EndProject

@@ -40,29 +40,29 @@
         <PackageReference Include="Alchyr.Sts2.ModAnalyzers" Version="*"/>
         <!-- Generates a .pck file when building if only using simple assets. May not work on all setups. Uncomment to test. -->
         <!-- <PackageReference Include="BSchneppe.StS2.PckPacker" Version="0.1.1" PrivateAssets="All" /> -->
-        <AdditionalFiles Include="AlternativeStartingDecks/localization/**/*.json"/> <!-- Used by analyzer -->
+        <AdditionalFiles Include="AlternativeStartingInventory/localization/**/*.json"/> <!-- Used by analyzer -->
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="AlternativeStartingDecks/**"/>
+        <Compile Remove="AlternativeStartingInventory/**"/>
         <Compile Remove="materials/**"/>
         <Compile Remove="shaders/**"/>
         <Compile Remove="images/**"/>
-        <EmbeddedResource Remove="AlternativeStartingDecks/**"/>
+        <EmbeddedResource Remove="AlternativeStartingInventory/**"/>
         <EmbeddedResource Remove="materials/**"/>
         <EmbeddedResource Remove="shaders/**"/>
         <EmbeddedResource Remove="images/**"/>
         <Compile Remove="Tools\obj\**"/>
         <EmbeddedResource Remove="Tools\obj\**"/>
-        <Compile Remove="AlternativeStartingDecksCode\Patches\Utils\MessCharSelectPatch.cs"/>
+        <Compile Remove="AlternativeStartingInventoryCode\Patches\Utils\MessCharSelectPatch.cs"/>
     </ItemGroup>
 
     <ItemGroup>
         <None Condition="Exists('Directory.Build.props')" Include="Directory.Build.props"/>
         <None Include=".gitignore"/>
-        <None Include="AlternativeStartingDecks.json"/>
+        <None Include="AlternativeStartingInventory.json"/>
         <None Include="project.godot"/>
-        <None Include="AlternativeStartingDecks/**"/>
+        <None Include="AlternativeStartingInventory/**"/>
     </ItemGroup>
 
     <Target Name="CheckDependencyPaths">
