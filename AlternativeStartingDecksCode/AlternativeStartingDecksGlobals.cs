@@ -10,4 +10,10 @@ public static class AlternativeStartingDecksGlobals
     // It happens when both ContextLocal, RunManager, and LobbyRun all are missing
     // the local player's NetId
     public static ulong NetId = 0;
+
+    /// <summary>
+    ///     List of Starting Inventories by Character
+    /// </summary>
+    public static Dictionary<string, Dictionary<string, StartingInventory>>
+        AlternativeStartingInventoryByCharacter { get; set; } = new();
 }

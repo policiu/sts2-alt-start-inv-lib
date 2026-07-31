@@ -1,5 +1,4 @@
-﻿using AlternativeStartingDecks.AlternativeStartingDecksCode.Utils;
-using BaseLib.Config;
+﻿using BaseLib.Config;
 
 namespace AlternativeStartingDecks.AlternativeStartingDecksCode;
 
@@ -27,10 +26,4 @@ public static class AlternativeStartingDecksLogger
 internal class AlternativeStartingDecksConfig : SimpleModConfig
 {
     public static int MaxItemsToShow { get; set; } = 25;
-
-    /// <summary>
-    ///     List of Starting Inventories by Character
-    /// </summary>
-    public static Dictionary<string, Dictionary<string, StartingInventory>>
-        AlternativeStartingDecksByCharacter { get; set; } = new();
 }

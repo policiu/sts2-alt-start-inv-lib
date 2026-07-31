@@ -14,10 +14,10 @@ public static class StartingInventoryManager
         StartingInventory inventory)
     {
         var characterClassName = characterModel.GetType().Name;
-        AlternativeStartingDecksConfig.AlternativeStartingDecksByCharacter.TryAdd(characterClassName,
+        AlternativeStartingDecksGlobals.AlternativeStartingInventoryByCharacter.TryAdd(characterClassName,
             new Dictionary<string, StartingInventory>());
 
-        AlternativeStartingDecksConfig.AlternativeStartingDecksByCharacter[characterClassName][inventory.Id] =
+        AlternativeStartingDecksGlobals.AlternativeStartingInventoryByCharacter[characterClassName][inventory.Id] =
             inventory;
     }
 
@@ -30,7 +30,8 @@ public static class StartingInventoryManager
     public static List<StartingInventory> GetStartingInventoriesForCharacter(
         string characterClassName)
     {
-        return AlternativeStartingDecksConfig.AlternativeStartingDecksByCharacter[characterClassName].Values.ToList();
+        return AlternativeStartingDecksGlobals.AlternativeStartingInventoryByCharacter[characterClassName].Values
+            .ToList();
     }
 
     internal static void LoadDefaultInventoryForAllCharacters()
