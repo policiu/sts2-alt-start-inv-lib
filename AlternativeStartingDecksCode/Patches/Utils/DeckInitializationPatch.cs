@@ -20,13 +20,13 @@ internal class DeckInitializationPatch
 
         // Load Some Examples
         StartingInventoryManager.AddNewInventoryForCharacter(ModelDb.AllCharacters.First(),
-            new AlternativeStartingInventory(ModelDb.AllCharacters.First(), "example")
+            new StartingInventory(ModelDb.AllCharacters.First(), "example")
             {
                 Cards = [ModelDb.Card<Anger>()]
             });
 
         StartingInventoryManager.AddNewInventoryForCharacter(ModelDb.AllCharacters.First(),
-            new AlternativeStartingInventory(ModelDb.AllCharacters.First(), "example2",
+            new StartingInventory(ModelDb.AllCharacters.First(), "example2",
                 EpochModel.Get<Ironclad2Epoch>())
             {
                 Gold = 20,
@@ -39,7 +39,7 @@ internal class DeckInitializationPatch
 
 
         StartingInventoryManager.AddNewInventoryForCharacter(ModelDb.AllCharacters.First(),
-            new AlternativeStartingInventory(ModelDb.AllCharacters.First(), "example5"
+            new StartingInventory(ModelDb.AllCharacters.First(), "example5"
             )
             {
                 Gold = 20,
@@ -52,7 +52,7 @@ internal class DeckInitializationPatch
 
 
         StartingInventoryManager.AddNewInventoryForCharacter(ModelDb.AllCharacters.First(),
-            new AlternativeStartingInventory(ModelDb.AllCharacters.First(), "example4")
+            new StartingInventory(ModelDb.AllCharacters.First(), "example4")
             {
                 Gold = 20,
                 Hp = 3,
@@ -64,7 +64,7 @@ internal class DeckInitializationPatch
             });
 
         StartingInventoryManager.AddNewInventoryForCharacter(ModelDb.AllCharacters.Last(),
-            new AlternativeStartingInventory(ModelDb.AllCharacters.Last(), "example-3")
+            new StartingInventory(ModelDb.AllCharacters.Last(), "example-3")
             {
                 Name = "Example"
             });

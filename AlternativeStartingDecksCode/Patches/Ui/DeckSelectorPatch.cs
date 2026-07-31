@@ -20,7 +20,7 @@ internal static class SharedUi
 public class DeckSelectorPatch
 {
     private static void OnDeckPressed(DeckInfoPanelExtended panel, DeckInfoPlaceholderExtended deck,
-        AlternativeStartingInventory inventory,
+        StartingInventory inventory,
         CharacterModel characterModel, bool isCharacterLocked)
     {
         // Prevent if locked :)
@@ -231,7 +231,7 @@ public class DeckSelectorPatch
 
         private static void SetupDeckStrings(DeckInfoPlaceholderExtended deckHelper,
             CharacterModel character,
-            AlternativeStartingInventory inventory, bool characterIsLocked, bool inventoryIsLocked)
+            StartingInventory inventory, bool characterIsLocked, bool inventoryIsLocked)
         {
             if (characterIsLocked)
             {

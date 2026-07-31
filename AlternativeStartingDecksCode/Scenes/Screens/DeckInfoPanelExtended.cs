@@ -1,5 +1,6 @@
 ﻿using AlternativeStartingDecks.AlternativeStartingDecksCode.Nodes.CommonUi;
 using AlternativeStartingDecks.AlternativeStartingDecksCode.Patches.Utils;
+using AlternativeStartingDecks.AlternativeStartingDecksCode.Utils;
 using Godot;
 using MegaCrit.Sts2.addons.mega_text;
 using MegaCrit.Sts2.Core.Assets;
@@ -62,7 +63,7 @@ public partial class DeckInfoPanelExtended : Control
     }
 
 
-    private void LoadDeckInformation(AlternativeStartingInventory inventory, CharacterModel characterModel)
+    private void LoadDeckInformation(StartingInventory inventory, CharacterModel characterModel)
     {
         var tmpPlayer = new Player(characterModel, 0, 0, 0, 0, 0, 0, 0, null, null);
 
@@ -132,7 +133,7 @@ public partial class DeckInfoPanelExtended : Control
         }
     }
 
-    public void ShowDeckInformation(AlternativeStartingInventory inventory, CharacterModel characterModel)
+    public void ShowDeckInformation(StartingInventory inventory, CharacterModel characterModel)
     {
         LoadDeckInformation(inventory, characterModel);
         _deckInformation?.Show();

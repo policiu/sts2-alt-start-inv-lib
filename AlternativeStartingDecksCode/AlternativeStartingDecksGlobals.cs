@@ -1,6 +1,8 @@
-﻿namespace AlternativeStartingDecks.AlternativeStartingDecksCode;
+﻿using AlternativeStartingDecks.AlternativeStartingDecksCode.Utils;
+
+namespace AlternativeStartingDecks.AlternativeStartingDecksCode;
 
 public static class AlternativeStartingDecksGlobals
 {
-    public static AlternativeStartingInventory? StartingInventory = null;
+    public static StartingInventory? StartingInventory = null;
 }

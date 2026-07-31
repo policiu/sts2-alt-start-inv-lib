@@ -11,23 +11,23 @@ public static class StartingInventoryManager
     /// <param name="inventory">Inventory to add</param>
     public static void AddNewInventoryForCharacter(
         CharacterModel characterModel,
-        AlternativeStartingInventory inventory)
+        StartingInventory inventory)
     {
         var characterClassName = characterModel.GetType().Name;
         AlternativeStartingDecksConfig.AlternativeStartingDecksByCharacter.TryAdd(characterClassName,
-            new Dictionary<string, AlternativeStartingInventory>());
+            new Dictionary<string, StartingInventory>());
 
         AlternativeStartingDecksConfig.AlternativeStartingDecksByCharacter[characterClassName][inventory.Id] =
             inventory;
     }
 
 
-    public static List<AlternativeStartingInventory> GetStartingInventoriesForCharacter(CharacterModel character)
+    public static List<StartingInventory> GetStartingInventoriesForCharacter(CharacterModel character)
     {
         return GetStartingInventoriesForCharacter(character.GetType().Name);
     }
 
-    public static List<AlternativeStartingInventory> GetStartingInventoriesForCharacter(
+    public static List<StartingInventory> GetStartingInventoriesForCharacter(
         string characterClassName)
     {
         return AlternativeStartingDecksConfig.AlternativeStartingDecksByCharacter[characterClassName].Values.ToList();
@@ -36,6 +36,6 @@ public static class StartingInventoryManager
     internal static void LoadDefaultInventoryForAllCharacters()
     {
         foreach (var character in ModelDb.AllCharacters)
-            AddNewInventoryForCharacter(character, new AlternativeStartingInventory(character, "default"));
+            AddNewInventoryForCharacter(character, new StartingInventory(character, "default"));
     }
 }
