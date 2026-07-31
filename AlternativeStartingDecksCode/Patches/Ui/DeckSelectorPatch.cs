@@ -7,15 +7,8 @@ using HarmonyLib;
 using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Screens.CharacterSelect;
-using Timer = Godot.Timer;
 
 namespace AlternativeStartingDecks.AlternativeStartingDecksCode.Patches.Ui;
-
-// Don't Look, def won't crash... promise?
-internal static class SharedUi
-{
-    public static Button? Button;
-}
 
 public class DeckSelectorPatch
 {
@@ -64,34 +57,8 @@ public class DeckSelectorPatch
 
         private static void InjectDeckSelectorUi(NCharacterSelectScreen screen)
         {
-            var button = new Button();
             var infoPanelOg = screen.GetNodeOrNull<Control>("InfoPanel");
 
-            void Clicked()
-            {
-                button.Text = button.GetGlobalMousePosition() + " " +
-                              ((Control)button.GetParent()).GetLocalMousePosition() + '\n';
-                button.Text += (screen.GetViewport().GuiGetHoveredControl()?.Name ?? "No Element") + "\n";
-                button.Text += screen.GetViewport().GuiGetHoveredControl()?.GetParentControl()?.Name ?? "No Element";
-            }
-
-
-            button.Text = "Add Character Select";
-            button.CustomMinimumSize = new Vector2(150, 50);
-            button.Position = new Vector2(-940, -1000);
-            screen.GetNodeOrNull("CharSelectButtons/ButtonContainer")?.AddSibling(button);
-            button.MouseEntered += Clicked;
-            SharedUi.Button = button;
-
-            // Add Timer
-            var myTimer = new Timer();
-            myTimer.WaitTime = 1;
-            myTimer.SetOneShot(false);
-            myTimer.Timeout += Clicked;
-            button.AddSibling(myTimer);
-            myTimer.Start();
-
-            // Anyways :)
             var next = DeckInfoPanelExtended.LoadScene();
             if (next == null) return;
             infoPanelOg.AddSibling(next);
@@ -185,6 +152,13 @@ public class DeckSelectorPatch
         private static void LoadDecks(NCharacterSelectScreen screen, NCharacterSelectButton charSelectButton)
         {
             var deckInfoPanel = screen.GetNodeOrNull<DeckInfoPanelExtended>(DeckInfoName);
+            var characterModel = charSelectButton.Character;
+            var character = characterModel.GetType().Name;
+
+            var title = charSelectButton.IsLocked
+                ? new LocString("main_menu_ui", "CHARACTER_SELECT.locked.title").GetFormattedText()
+                : new LocString("characters", characterModel.CharacterSelectTitle).GetFormattedText();
+            deckInfoPanel.SetTitle(title);
             var container = deckInfoPanel.GetNodeOrNull<Control>("VBoxContainer/ScrollContainer/VBoxContainer");
 
             // Clear our overrides in case something goes wrong
@@ -193,10 +167,6 @@ public class DeckSelectorPatch
             if (container == null) return;
             foreach (var child in container.GetChildren())
                 child.QueueFree();
-
-            var character = screen._selectedButton?._character.GetType().Name;
-
-            if (character is null) return;
 
             var inventories = StartingInventoryManager.GetStartingInventoriesForCharacter(character);
             var isFirstVisibleDeckSelected = false;
@@ -215,16 +185,16 @@ public class DeckSelectorPatch
 
                 // Might be slow? Should profile?
                 // Prob fine, it's just a menu :)
-                SetupDeckStrings(deckHelper, charSelectButton.Character, inventory, charSelectButton.IsLocked,
+                SetupDeckStrings(deckHelper, characterModel, inventory, charSelectButton.IsLocked,
                     inventory.IsLocked);
 
                 // Apply Event
                 deckHelper.Button.MousePressed += _ => OnDeckPressed(deckInfoPanel, deckHelper, inventory,
-                    charSelectButton._character, charSelectButton.IsLocked);
+                    characterModel, charSelectButton.IsLocked);
                 if (!isFirstVisibleDeckSelected)
                     // Make sure to apply first deck
                     isFirstVisibleDeckSelected = OnDeckPressed(deckInfoPanel, deckHelper, inventory,
-                        charSelectButton._character,
+                        characterModel,
                         charSelectButton.IsLocked);
             }
 
@@ -263,9 +233,7 @@ public class DeckSelectorPatch
 
             {
                 deckHelper.DeckName = inventory.Name;
-
                 deckHelper.DeckDescription = inventory.Description;
-
                 deckHelper.Deck = inventory.Cards.Count().ToString();
                 deckHelper.Hp = $"{inventory.Hp.ToString()}/{inventory.Hp.ToString()}";
                 deckHelper.Relics = inventory.Relics.Count().ToString();
@@ -273,15 +241,5 @@ public class DeckSelectorPatch
                 deckHelper.Gold = inventory.Gold.ToString();
             }
         }
-    }
-}
-
-[HarmonyPatch(nameof(NCharacterSelectButton), nameof(NCharacterSelectButton.Select))]
-public static class NCharacterSelectButtonSelectPatch
-{
-    public static void Postfix(NCharacterSelectButton __instance)
-    {
-        var button = SharedUi.Button;
-        if (button != null) button.Text = __instance._character.CharacterSelectTitle;
     }
 }

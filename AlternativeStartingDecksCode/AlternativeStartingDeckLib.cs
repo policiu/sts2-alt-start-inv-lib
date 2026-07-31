@@ -1,5 +1,6 @@
 using System.Reflection;
 using BaseLib.Config;
+using BaseLib.Utils;
 using Godot;
 using Godot.Bridge;
 using HarmonyLib;
@@ -28,5 +29,6 @@ public partial class AlternativeStartingDeckLib : Node
         harmony.PatchAll();
 
         ModConfigRegistry.Register(ModId, new AlternativeStartingDecksConfig());
+        CustomLocTableManager.Register("deck_panel_info");
     }
 }

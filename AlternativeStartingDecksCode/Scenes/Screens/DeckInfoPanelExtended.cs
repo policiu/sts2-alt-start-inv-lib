@@ -5,6 +5,7 @@ using Godot;
 using MegaCrit.Sts2.addons.mega_text;
 using MegaCrit.Sts2.Core.Assets;
 using MegaCrit.Sts2.Core.Entities.Players;
+using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Screens.RunHistoryScreen;
 
@@ -48,6 +49,7 @@ public partial class DeckInfoPanelExtended : Control
             GetNode<Control>("DeckInformation/ScrollContainer/VBoxContainer/PotionAndHeaderContainer/PotionContainer");
         _relicHistoryContainer = GetNode<Control>("DeckInformation/ScrollContainer/VBoxContainer/RelicContainer");
 
+
         var button = (CancelButtonVertical?)GetNode<Control>("DeckInformation/BackButton")
             .SafelySetScript(PreloadManager.Cache.GetAsset(
                 "res://AlternativeStartingDecksCode/Nodes/CommonUi/CancelButtonVertical.cs"));
@@ -60,6 +62,11 @@ public partial class DeckInfoPanelExtended : Control
                 if (button._isHovered) _deckInformation.Hide();
             };
         }
+    }
+
+    public void SetTitle(string title)
+    {
+        GetNode<MegaLabel>("VBoxContainer/Name").Text = title;
     }
 
 
@@ -118,8 +125,11 @@ public partial class DeckInfoPanelExtended : Control
                 if (_potionHistoryContainer != null)
                 {
                     _potionHistoryContainer.AddChild(_potionHistory);
-                    _potionHistoryContainer.GetParent().GetNode<MegaRichTextLabel>("Header")._maxFontSize = 24;
-                    _potionHistoryContainer.GetParent().GetNode<MegaRichTextLabel>("Header")._minFontSize = 24;
+                    var header = _potionHistoryContainer.GetParent().GetNode<MegaRichTextLabel>("Header");
+
+                    header._maxFontSize = 24;
+                    header._minFontSize = 24;
+                    header.Text = new LocString("deck_panel_info", "POTION_TITLE").GetFormattedText();
                 }
             }
 
