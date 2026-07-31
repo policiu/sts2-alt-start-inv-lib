@@ -109,6 +109,10 @@ public partial class DeckInfoPlaceholderExtended : Control
 
     public void SetSelected(bool selected)
     {
+        if (!IsInstanceValid(_selectedTheme))
+            _selectedTheme =
+                (StyleBoxFlat?)PreloadManager.Cache.LoadAsset(
+                    "res://AlternativeStartingDecks/themes/selected_theme.tres");
         if (selected && _selectedTheme != null)
             AddThemeStyleboxOverride("panel", _selectedTheme);
         else

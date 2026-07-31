@@ -68,5 +68,11 @@ internal class DeckInitializationPatch
             {
                 Name = "Example"
             });
+
+        StartingInventoryManager.AddNewInventoryForCharacter(ModelDb.AllCharacters.First(),
+            new StartingInventory(ModelDb.AllCharacters.First(), "example9")
+            {
+                Relics = [ModelDb.Relic<WarPaint>()]
+            });
     }
 }
