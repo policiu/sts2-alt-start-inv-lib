@@ -1,13 +1,13 @@
 ﻿using BaseLib.Config;
 
-namespace AlternativeStartingDecks.AlternativeStartingDecksCode;
+namespace AlternativeStartingInventory.AlternativeStartingInventoryCode;
 
-public static class AlternativeStartingDecksLogger
+public static class AlternativeStartingInventoryLogger
 {
     /// <inheritdoc cref="M:BaseLib.Config.ModConfig.ModConfigLogger.Warn(System.String,System.Boolean)" />
     public static void Warn(string message, bool showInGui = false)
     {
-        AlternativeStartingDeckLib.Logger.Warn(message);
+        AlternativeStartingInventoryLib.Logger.Warn(message);
         if (!showInGui || ModConfig.ModConfigLogger.PendingUserMessages.Contains(message))
             return;
         ModConfig.ModConfigLogger.PendingUserMessages.Add(message);
@@ -16,14 +16,14 @@ public static class AlternativeStartingDecksLogger
     /// <inheritdoc cref="M:BaseLib.Config.ModConfig.ModConfigLogger.Warn(System.String,System.Boolean)" />
     public static void Error(string message, bool showInGui = true)
     {
-        AlternativeStartingDeckLib.Logger.Error(message);
+        AlternativeStartingInventoryLib.Logger.Error(message);
         if (!showInGui || ModConfig.ModConfigLogger.PendingUserMessages.Contains(message))
             return;
         ModConfig.ModConfigLogger.PendingUserMessages.Add(message);
     }
 }
 
-internal class AlternativeStartingDecksConfig : SimpleModConfig
+internal class AlternativeStartingInventoryConfig : SimpleModConfig
 {
     public static int MaxItemsToShow { get; set; } = 25;
 }

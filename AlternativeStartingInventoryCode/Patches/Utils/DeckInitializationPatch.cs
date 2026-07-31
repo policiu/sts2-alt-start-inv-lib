@@ -1,4 +1,4 @@
-﻿using AlternativeStartingDecks.AlternativeStartingDecksCode.Utils;
+﻿using AlternativeStartingInventory.AlternativeStartingInventoryCode.Utils;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Cards;
@@ -7,7 +7,7 @@ using MegaCrit.Sts2.Core.Models.Relics;
 using MegaCrit.Sts2.Core.Timeline;
 using MegaCrit.Sts2.Core.Timeline.Epochs;
 
-namespace AlternativeStartingDecks.AlternativeStartingDecksCode.Patches.Utils;
+namespace AlternativeStartingInventory.AlternativeStartingInventoryCode.Patches.Utils;
 
 [HarmonyPatch]
 internal class DeckInitializationPatch

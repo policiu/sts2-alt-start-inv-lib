@@ -3,7 +3,7 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Saves;
 using MegaCrit.Sts2.Core.Timeline;
 
-namespace AlternativeStartingDecks.AlternativeStartingDecksCode.Utils;
+namespace AlternativeStartingInventory.AlternativeStartingInventoryCode.Utils;
 
 public class StartingInventory(CharacterModel characterModel, string id, EpochModel? requiredEpoch = null)
 {

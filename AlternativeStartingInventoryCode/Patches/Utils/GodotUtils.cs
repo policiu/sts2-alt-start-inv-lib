@@ -1,7 +1,7 @@
 ﻿using Godot;
 using Object = Godot.GodotObject;
 
-namespace AlternativeStartingDecks.AlternativeStartingDecksCode.Patches.Utils;
+namespace AlternativeStartingInventory.AlternativeStartingInventoryCode.Patches.Utils;
 
 public static class GodotUtils
 {

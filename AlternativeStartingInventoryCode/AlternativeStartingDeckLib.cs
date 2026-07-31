@@ -8,12 +8,12 @@ using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Modding;
 using Logger = MegaCrit.Sts2.Core.Logging.Logger;
 
-namespace AlternativeStartingDecks.AlternativeStartingDecksCode;
+namespace AlternativeStartingInventory.AlternativeStartingInventoryCode;
 
 [ModInitializer(nameof(Initialize))]
-public partial class AlternativeStartingDeckLib : Node
+public partial class AlternativeStartingInventoryLib : Node
 {
-    public const string ModId = "AlternativeStartingDecks"; //Used for resource filepath
+    public const string ModId = "AlternativeStartingInventory"; //Used for resource filepath
     public const string ResPath = $"res://{ModId}";
 
     public static Logger Logger { get; } =
@@ -28,7 +28,7 @@ public partial class AlternativeStartingDeckLib : Node
 
         harmony.PatchAll();
 
-        ModConfigRegistry.Register(ModId, new AlternativeStartingDecksConfig());
+        ModConfigRegistry.Register(ModId, new AlternativeStartingInventoryConfig());
         CustomLocTableManager.Register("deck_panel_info");
     }
 }

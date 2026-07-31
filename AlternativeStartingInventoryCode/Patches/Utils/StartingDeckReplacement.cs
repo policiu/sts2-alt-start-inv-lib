@@ -5,14 +5,14 @@ using MegaCrit.Sts2.Core.Runs;
 using MegaCrit.Sts2.Core.Saves;
 using MegaCrit.Sts2.Core.Unlocks;
 
-namespace AlternativeStartingDecks.AlternativeStartingDecksCode.Patches.Utils;
+namespace AlternativeStartingInventory.AlternativeStartingInventoryCode.Patches.Utils;
 
 [HarmonyPatch(nameof(Player), nameof(Player.PopulateStartingInventory))]
 public class StartingDeckReplacement
 {
     public static bool Prefix(Player __instance)
     {
-        if (__instance.NetId != AlternativeStartingDecksGlobals.NetId) return true;
+        if (__instance.NetId != AlternativeStartingInventoryGlobals.NetId) return true;
 
         // Copied from base since we aren't calling 'em
         // Surely this causes *no* problems
@@ -24,10 +24,10 @@ public class StartingDeckReplacement
 
         try
         {
-            var startingInventory = AlternativeStartingDecksGlobals.StartingInventory;
+            var startingInventory = AlternativeStartingInventoryGlobals.StartingInventory;
             if (startingInventory == null)
             {
-                AlternativeStartingDecksLogger.Warn(
+                AlternativeStartingInventoryLogger.Warn(
                     "Tried to replace deck with null inventory! Defaulting to standard inventory.");
                 return true;
             }
@@ -42,7 +42,7 @@ public class StartingDeckReplacement
         }
         catch (Exception ex)
         {
-            AlternativeStartingDecksLogger.Warn("Failed to replace deck: \n" + ex.Message + "\n" + ex.InnerException);
+            AlternativeStartingInventoryLogger.Warn("Failed to replace deck: \n" + ex.Message + "\n" + ex.InnerException);
             __instance.Deck.Clear();
             __instance._potionSlots.ForEach(pot => pot?.Discard());
             // Probably major problems here
@@ -99,10 +99,10 @@ public class CreateForNewRunPatch
         UnlockState unlockState,
         ulong netId)
     {
-        var inventory = AlternativeStartingDecksGlobals.StartingInventory;
+        var inventory = AlternativeStartingInventoryGlobals.StartingInventory;
         if (inventory is null) return;
-        AlternativeStartingDecksLogger.Warn($"Launching with deck {inventory.Name} for netId {netId}");
-        if (__result.NetId != AlternativeStartingDecksGlobals.NetId) return;
+        AlternativeStartingInventoryLogger.Warn($"Launching with deck {inventory.Name} for netId {netId}");
+        if (__result.NetId != AlternativeStartingInventoryGlobals.NetId) return;
 
         __result.Creature.SetMaxHpInternal(inventory.Hp);
         __result.Creature.SetCurrentHpInternal(inventory.Hp);

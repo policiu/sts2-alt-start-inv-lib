@@ -30,6 +30,7 @@ AutoSizeEnabled = false
 MinFontSize = 24
 MaxFontSize = 24
 
+
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
 mouse_filter = 2

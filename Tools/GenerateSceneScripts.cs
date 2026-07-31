@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace AlternativeStartingDecks.Scripts;
+namespace AlternativeStartingInventory.Scripts;
 
 internal class AssetInformation
 {
@@ -56,14 +56,14 @@ public class GenerateSceneScripts
         var name = Path.GetFileNameWithoutExtension(path);
         name = ToTileCase(name, "_");
 
-        var resourcePath = "res://AlternativeStartingDecks/" + path.Split("AlternativeStartingDecks/")[^1];
-        var codeNameSpace = string.Join(".", path.Split("AlternativeStartingDecks/")[^1].Split("/")[..^1]);
+        var resourcePath = "res://AlternativeStartingInventory/" + path.Split("AlternativeStartingInventory/")[^1];
+        var codeNameSpace = string.Join(".", path.Split("AlternativeStartingInventory/")[^1].Split("/")[..^1]);
         codeNameSpace = ToTileCase(codeNameSpace, ".", ".");
 
         Console.WriteLine(resourcePath);
         Console.WriteLine(prjPath);
         Console.WriteLine(codeNameSpace);
-        var outputFile = $"{prjPath}/AlternativeStartingDecksCode/{codeNameSpace.Replace(".", "/")}/{name}.cs";
+        var outputFile = $"{prjPath}/AlternativeStartingInventoryCode/{codeNameSpace.Replace(".", "/")}/{name}.cs";
 
         ParseTscnFile(path);
         var (loadCode, applyCode) = GenerateAssetCode();
@@ -254,10 +254,10 @@ public class GenerateSceneScripts
     {
         return $$"""
                  /* GENERATED CODE, DO NOT MODIFY */
-                 using AlternativeStartingDecks.AlternativeStartingDecksCode.Patches.Utils;
+                 using AlternativeStartingInventory.AlternativeStartingInventoryCode.Patches.Utils;
                  using Godot;
                  using MegaCrit.Sts2.Core.Assets;
-                 namespace AlternativeStartingDecks.AlternativeStartingDecksCode.{{codePath}};
+                 namespace AlternativeStartingInventory.AlternativeStartingInventoryCode.{{codePath}};
 
                  public static class {{resourceName}}
                  {

@@ -1,6 +1,6 @@
-﻿using AlternativeStartingDecks.AlternativeStartingDecksCode.Nodes.CommonUi;
-using AlternativeStartingDecks.AlternativeStartingDecksCode.Patches.Utils;
-using AlternativeStartingDecks.AlternativeStartingDecksCode.Utils;
+﻿using AlternativeStartingInventory.AlternativeStartingInventoryCode.Nodes.CommonUi;
+using AlternativeStartingInventory.AlternativeStartingInventoryCode.Patches.Utils;
+using AlternativeStartingInventory.AlternativeStartingInventoryCode.Utils;
 using Godot;
 using MegaCrit.Sts2.addons.mega_text;
 using MegaCrit.Sts2.Core.Assets;
@@ -9,7 +9,7 @@ using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Screens.RunHistoryScreen;
 
-namespace AlternativeStartingDecks.AlternativeStartingDecksCode.Scenes.Screens;
+namespace AlternativeStartingInventory.AlternativeStartingInventoryCode.Scenes.Screens;
 
 public partial class DeckInfoPanelExtended : Control
 {
@@ -34,7 +34,7 @@ public partial class DeckInfoPanelExtended : Control
         if (result == null) return null;
 
         result = result.SafelySetScript(PreloadManager.Cache.GetAsset(
-            "res://AlternativeStartingDecksCode/Scenes/Screens/DeckInfoPanelExtended.cs"));
+            "res://AlternativeStartingInventoryCode/Scenes/Screens/DeckInfoPanelExtended.cs"));
 
         return result as DeckInfoPanelExtended;
     }
@@ -52,7 +52,7 @@ public partial class DeckInfoPanelExtended : Control
 
         var button = (CancelButtonVertical?)GetNode<Control>("DeckInformation/BackButton")
             .SafelySetScript(PreloadManager.Cache.GetAsset(
-                "res://AlternativeStartingDecksCode/Nodes/CommonUi/CancelButtonVertical.cs"));
+                "res://AlternativeStartingInventoryCode/Nodes/CommonUi/CancelButtonVertical.cs"));
         if (button != null)
         {
             button._Ready();
@@ -90,7 +90,7 @@ public partial class DeckInfoPanelExtended : Control
 
             _deckHistory?.LoadDeck(tmpPlayer,
                 inventory.Cards.Select(c => c.ToMutable().ToSerializable())
-                    .Take(AlternativeStartingDecksConfig.MaxItemsToShow));
+                    .Take(AlternativeStartingInventoryConfig.MaxItemsToShow));
 
             _deckHistoryContainer?.Show();
         }
@@ -111,7 +111,7 @@ public partial class DeckInfoPanelExtended : Control
 
             _relicHistory?.LoadRelics(tmpPlayer,
                 inventory.Relics.Select(c => c.ToMutable().ToSerializable())
-                    .Take(AlternativeStartingDecksConfig.MaxItemsToShow)
+                    .Take(AlternativeStartingInventoryConfig.MaxItemsToShow)
             );
             _relicHistoryContainer?.Show();
         }

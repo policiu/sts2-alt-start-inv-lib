@@ -1,15 +1,15 @@
 /* GENERATED CODE, DO NOT MODIFY */
-using AlternativeStartingDecks.AlternativeStartingDecksCode.Patches.Utils;
+using AlternativeStartingInventory.AlternativeStartingInventoryCode.Patches.Utils;
 using Godot;
 using MegaCrit.Sts2.Core.Assets;
-namespace AlternativeStartingDecks.AlternativeStartingDecksCode.Scenes.Screens;
+namespace AlternativeStartingInventory.AlternativeStartingInventoryCode.Scenes.Screens;
 
 public static class DeckHistory
 {
 
      public static Node? LoadScene(string name = "DeckHistory")
      {
-        var result = PreloadManager.Cache.GetScene("res://AlternativeStartingDecks/scenes/screens/deck_history.tscn")
+        var result = PreloadManager.Cache.GetScene("res://AlternativeStartingInventory/scenes/screens/deck_history.tscn")
            .Instantiate();
        if (result == null) return null; 
        

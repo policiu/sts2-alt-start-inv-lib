@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
-using AlternativeStartingDecks.AlternativeStartingDecksCode.Scenes.Screens;
-using AlternativeStartingDecks.AlternativeStartingDecksCode.Utils;
+using AlternativeStartingInventory.AlternativeStartingInventoryCode.Scenes.Screens;
+using AlternativeStartingInventory.AlternativeStartingInventoryCode.Utils;
 using BaseLib.Config;
 using Godot;
 using HarmonyLib;
@@ -8,7 +8,7 @@ using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Screens.CharacterSelect;
 
-namespace AlternativeStartingDecks.AlternativeStartingDecksCode.Patches.Ui;
+namespace AlternativeStartingInventory.AlternativeStartingInventoryCode.Patches.Ui;
 
 public class DeckSelectorPatch
 {
@@ -19,7 +19,7 @@ public class DeckSelectorPatch
         // Prevent if locked :)
         if (isCharacterLocked)
         {
-            AlternativeStartingDecksGlobals.StartingInventory = null;
+            AlternativeStartingInventoryGlobals.StartingInventory = null;
             return false;
         }
 
@@ -31,7 +31,7 @@ public class DeckSelectorPatch
 
         panel.ShowDeckInformation(inventory, characterModel);
         deck.SetSelected(true);
-        AlternativeStartingDecksGlobals.StartingInventory = inventory;
+        AlternativeStartingInventoryGlobals.StartingInventory = inventory;
         return true;
     }
 
@@ -47,7 +47,7 @@ public class DeckSelectorPatch
             catch (Exception e)
             {
                 ModConfig.ModConfigLogger.Error(
-                    "AlternativeStartingDecks was unable to add the Deck Selection to the Character SelectScreen." +
+                    "AlternativeStartingInventory was unable to add the Deck Selection to the Character SelectScreen." +
                     "This is likely either due to a recent game update, or mod incompatibility." +
                     $"{e.Message}");
 
@@ -80,14 +80,14 @@ public class DeckSelectorPatch
         {
             try
             {
-                AlternativeStartingDecksGlobals.NetId = __instance.Lobby.NetService.NetId;
+                AlternativeStartingInventoryGlobals.NetId = __instance.Lobby.NetService.NetId;
                 InjectSelectCharacter(__instance, charSelectButton, characterModel);
             }
             catch (Exception e)
             {
-                AlternativeStartingDecksLogger.Warn("Unable to inject the Character SelectScreen. " + "\n" + e.Message +
+                AlternativeStartingInventoryLogger.Warn("Unable to inject the Character SelectScreen. " + "\n" + e.Message +
                                                     "\n" + e.StackTrace);
-                AlternativeStartingDecksLogger.Warn(e.InnerException?.Message ?? " ");
+                AlternativeStartingInventoryLogger.Warn(e.InnerException?.Message ?? " ");
             }
         }
 
@@ -163,7 +163,7 @@ public class DeckSelectorPatch
             var container = deckInfoPanel.GetNodeOrNull<Control>("VBoxContainer/ScrollContainer/VBoxContainer");
 
             // Clear our overrides in case something goes wrong
-            AlternativeStartingDecksGlobals.StartingInventory = null;
+            AlternativeStartingInventoryGlobals.StartingInventory = null;
 
             if (container == null) return;
             foreach (var child in container.GetChildren())

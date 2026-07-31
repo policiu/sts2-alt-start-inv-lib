@@ -15,6 +15,7 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_e8xms")
 
+
 [node name="Header" type="RichTextLabel" parent="."]
 clip_contents = false
 custom_minimum_size = Vector2(0, 36)

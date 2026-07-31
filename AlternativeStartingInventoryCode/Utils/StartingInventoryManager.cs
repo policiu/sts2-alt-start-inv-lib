@@ -1,6 +1,6 @@
 ﻿using MegaCrit.Sts2.Core.Models;
 
-namespace AlternativeStartingDecks.AlternativeStartingDecksCode.Utils;
+namespace AlternativeStartingInventory.AlternativeStartingInventoryCode.Utils;
 
 public static class StartingInventoryManager
 {
@@ -14,10 +14,10 @@ public static class StartingInventoryManager
         StartingInventory inventory)
     {
         var characterClassName = characterModel.GetType().Name;
-        AlternativeStartingDecksGlobals.AlternativeStartingInventoryByCharacter.TryAdd(characterClassName,
+        AlternativeStartingInventoryGlobals.AlternativeStartingInventoryByCharacter.TryAdd(characterClassName,
             new Dictionary<string, StartingInventory>());
 
-        AlternativeStartingDecksGlobals.AlternativeStartingInventoryByCharacter[characterClassName][inventory.Id] =
+        AlternativeStartingInventoryGlobals.AlternativeStartingInventoryByCharacter[characterClassName][inventory.Id] =
             inventory;
     }
 
@@ -30,7 +30,7 @@ public static class StartingInventoryManager
     public static List<StartingInventory> GetStartingInventoriesForCharacter(
         string characterClassName)
     {
-        return AlternativeStartingDecksGlobals.AlternativeStartingInventoryByCharacter[characterClassName].Values
+        return AlternativeStartingInventoryGlobals.AlternativeStartingInventoryByCharacter[characterClassName].Values
             .ToList();
     }
 

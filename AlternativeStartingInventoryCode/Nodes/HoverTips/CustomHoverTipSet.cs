@@ -1,4 +1,4 @@
-﻿using AlternativeStartingDecks.AlternativeStartingDecksCode.Patches.Utils;
+﻿using AlternativeStartingInventory.AlternativeStartingInventoryCode.Patches.Utils;
 using Godot;
 using MegaCrit.Sts2.Core.Assets;
 using MegaCrit.Sts2.Core.Helpers;
@@ -6,7 +6,7 @@ using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.HoverTips;
 
-namespace AlternativeStartingDecks.AlternativeStartingDecksCode.Nodes.HoverTips;
+namespace AlternativeStartingInventory.AlternativeStartingInventoryCode.Nodes.HoverTips;
 
 public class CustomHoverTip
 {
@@ -28,7 +28,7 @@ public partial class CustomHoverTipSet : NHoverTipSet
 
         // Hmm?
         child = child.SafelySetScript(
-            PreloadManager.Cache.GetAsset("res://AlternativeStartingDecksCode/Nodes/HoverTips/CustomHoverTipSet.cs"));
+            PreloadManager.Cache.GetAsset("res://AlternativeStartingInventoryCode/Nodes/HoverTips/CustomHoverTipSet.cs"));
         if (child == null) return null;
 
         HoverTipsContainer.AddChildSafely(child);

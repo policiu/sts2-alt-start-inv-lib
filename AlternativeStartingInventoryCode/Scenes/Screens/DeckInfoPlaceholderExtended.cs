@@ -1,10 +1,10 @@
-﻿using AlternativeStartingDecks.AlternativeStartingDecksCode.Patches.Utils;
+﻿using AlternativeStartingInventory.AlternativeStartingInventoryCode.Patches.Utils;
 using Godot;
 using MegaCrit.Sts2.addons.mega_text;
 using MegaCrit.Sts2.Core.Assets;
 using MegaCrit.Sts2.Core.Nodes.GodotExtensions;
 
-namespace AlternativeStartingDecks.AlternativeStartingDecksCode.Scenes.Screens;
+namespace AlternativeStartingInventory.AlternativeStartingInventoryCode.Scenes.Screens;
 
 public partial class DeckInfoPlaceholderExtended : Control
 {
@@ -84,7 +84,7 @@ public partial class DeckInfoPlaceholderExtended : Control
     public override void _Ready()
     {
         _selectedTheme =
-            (StyleBoxFlat?)PreloadManager.Cache.LoadAsset("res://AlternativeStartingDecks/themes/selected_theme.tres");
+            (StyleBoxFlat?)PreloadManager.Cache.LoadAsset("res://AlternativeStartingInventory/themes/selected_theme.tres");
         if (_selectedTheme != null) StartLoopingBorder(CreateTween().SetLoops(), _selectedTheme, 1.0f);
         _originalHoverScale = Scale;
         _originalColor = Modulate;
@@ -112,7 +112,7 @@ public partial class DeckInfoPlaceholderExtended : Control
         if (!IsInstanceValid(_selectedTheme))
             _selectedTheme =
                 (StyleBoxFlat?)PreloadManager.Cache.LoadAsset(
-                    "res://AlternativeStartingDecks/themes/selected_theme.tres");
+                    "res://AlternativeStartingInventory/themes/selected_theme.tres");
         if (selected && _selectedTheme != null)
             AddThemeStyleboxOverride("panel", _selectedTheme);
         else
@@ -129,7 +129,7 @@ public partial class DeckInfoPlaceholderExtended : Control
 
         // Setting Script directly disposes the previous object
         result = result.SafelySetScript(PreloadManager.Cache.LoadAsset(
-            "res://AlternativeStartingDecksCode/Scenes/Screens/DeckInfoPlaceholderExtended.cs"));
+            "res://AlternativeStartingInventoryCode/Scenes/Screens/DeckInfoPlaceholderExtended.cs"));
 
         return result;
     }

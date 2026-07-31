@@ -1,4 +1,4 @@
-﻿using AlternativeStartingDecks.AlternativeStartingDecksCode.Patches.Utils;
+﻿using AlternativeStartingInventory.AlternativeStartingInventoryCode.Patches.Utils;
 using Godot;
 using MegaCrit.Sts2.Core.Assets;
 using MegaCrit.Sts2.Core.Entities.Players;
@@ -6,7 +6,7 @@ using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Potions;
 
-namespace AlternativeStartingDecks.AlternativeStartingDecksCode.Scenes.Screens;
+namespace AlternativeStartingInventory.AlternativeStartingInventoryCode.Scenes.Screens;
 
 public partial class PotionHistoryExtended : Control
 {
@@ -16,7 +16,7 @@ public partial class PotionHistoryExtended : Control
         result.Name = name;
         result = result.SafelySetScript(
             PreloadManager.Cache.GetAsset(
-                "res://AlternativeStartingDecksCode/Scenes/Screens/PotionHistoryExtended.cs"));
+                "res://AlternativeStartingInventoryCode/Scenes/Screens/PotionHistoryExtended.cs"));
         return result;
     }
 

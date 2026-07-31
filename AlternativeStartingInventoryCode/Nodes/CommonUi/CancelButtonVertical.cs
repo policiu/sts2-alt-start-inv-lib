@@ -2,7 +2,7 @@
 using MegaCrit.Sts2.Core.Nodes.CommonUi;
 using MegaCrit.Sts2.Core.Nodes.GodotExtensions;
 
-namespace AlternativeStartingDecks.AlternativeStartingDecksCode.Nodes.CommonUi;
+namespace AlternativeStartingInventory.AlternativeStartingInventoryCode.Nodes.CommonUi;
 
 public partial class CancelButtonVertical : NButton
 {
