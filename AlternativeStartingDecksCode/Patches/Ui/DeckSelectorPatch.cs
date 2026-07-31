@@ -1,17 +1,12 @@
 ﻿using System.Diagnostics;
-using AlternativeStartingDecks.AlternativeStartingDecksCode.Nodes.HoverTips;
 using AlternativeStartingDecks.AlternativeStartingDecksCode.Scenes.Screens;
 using AlternativeStartingDecks.AlternativeStartingDecksCode.Utils;
 using BaseLib.Config;
 using Godot;
 using HarmonyLib;
-using MegaCrit.Sts2.Core.Entities.Players;
-using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Models;
-using MegaCrit.Sts2.Core.Nodes.HoverTips;
 using MegaCrit.Sts2.Core.Nodes.Screens.CharacterSelect;
-using MegaCrit.Sts2.Core.Nodes.Screens.RunHistoryScreen;
 using Timer = Godot.Timer;
 
 namespace AlternativeStartingDecks.AlternativeStartingDecksCode.Patches.Ui;
@@ -24,8 +19,9 @@ internal static class SharedUi
 
 public class DeckSelectorPatch
 {
-    private static void OnDeckPressed(DeckInfoPlaceholderExtended deck, AlternativeStartingInventory inventory,
-        bool isCharacterLocked)
+    private static void OnDeckPressed(DeckInfoPanelExtended panel, DeckInfoPlaceholderExtended deck,
+        AlternativeStartingInventory inventory,
+        CharacterModel characterModel, bool isCharacterLocked)
     {
         // Prevent if locked :)
         if (isCharacterLocked)
@@ -36,68 +32,13 @@ public class DeckSelectorPatch
 
         if (inventory.IsLocked) return;
 
-
         foreach (var node in deck.GetParent().FindChildren("*", "", false, false))
             if (node is DeckInfoPlaceholderExtended otherDeck)
                 otherDeck.SetSelected(false);
 
+        panel.ShowDeckInformation(inventory, characterModel);
         deck.SetSelected(true);
         AlternativeStartingDecksGlobals.StartingInventory = inventory;
-    }
-
-    private static void OnHover(Control owner, Control moveToControl, CharacterModel characterModel,
-        AlternativeStartingInventory inventory, bool characterLocked)
-    {
-        NHoverTipSet.Clear();
-
-        if (inventory.IsLocked || characterLocked) return;
-
-        var hx = (NDeckHistory?)DeckHistory.LoadScene();
-        var relicHx = (NRelicHistory?)RelicHistory.LoadScene();
-        var potionHx = (PotionHistoryExtended?)PotionHistoryExtended.LoadScene();
-
-        if (hx == null || relicHx == null || potionHx == null) return;
-
-        var set = CustomHoverTipSet.CreateAndShowWithContent(owner, [
-                new CustomHoverTip
-                {
-                    HoverTip = new HoverTip(new LocString("main_menu_ui", "CHARACTER_SELECT.locked.title")
-                    ),
-                    Content = hx
-                },
-                new CustomHoverTip
-                {
-                    HoverTip = new HoverTip(new LocString("main_menu_ui", "CARD_LIBRARY_RARITY_UNCOMMON")),
-                    Content = relicHx
-                },
-                new CustomHoverTip
-                {
-                    HoverTip = new HoverTip(new LocString("main_menu_ui", "CARD_LIBRARY_RARITY_COMMON")),
-                    Content = potionHx
-                }
-            ]
-        );
-        if (set == null) return;
-        var tmpPlayer = new Player(characterModel, 0, 0, 0, 0, 0, 0, 0, null, null);
-        hx.LoadDeck(tmpPlayer,
-            inventory.Cards.Select(c => c.ToMutable().ToSerializable()).Take(10));
-        relicHx.LoadRelics(tmpPlayer,
-            inventory.Relics.Select(c => c.ToMutable().ToSerializable()).Take(10)
-        );
-        potionHx.LoadPotions(tmpPlayer, inventory.Potions.ToList());
-
-        // Basically, we want to be next to the entry field so we can hover in it?
-        var yPos = 0.0f;
-        yPos = Math.Max(moveToControl.GlobalPosition.Y - set.Size.Y / 2, 45.0f);
-
-        // Running into the Player Icons
-        if (yPos + set.Size.Y > 750) yPos = Math.Max(45.0f, 750 - set.Size.Y);
-        set.GlobalPosition = new Vector2(moveToControl.GlobalPosition.X + moveToControl.Size.X + 25f, yPos);
-    }
-
-    private static void OnHoverLeave()
-    {
-        //NHoverTipSet.Clear();
     }
 
     [HarmonyPatch(typeof(NCharacterSelectScreen), nameof(NCharacterSelectScreen._Ready))]
@@ -150,7 +91,7 @@ public class DeckSelectorPatch
             myTimer.Start();
 
             // Anyways :)
-            var next = DeckInfoPanel.LoadScene();
+            var next = DeckInfoPanelExtended.LoadScene();
             if (next == null) return;
             infoPanelOg.AddSibling(next);
         }
@@ -242,7 +183,7 @@ public class DeckSelectorPatch
 
         private static void LoadDecks(NCharacterSelectScreen screen, NCharacterSelectButton charSelectButton)
         {
-            var deckInfoPanel = screen.GetNodeOrNull<Control>(DeckInfoName);
+            var deckInfoPanel = screen.GetNodeOrNull<DeckInfoPanelExtended>(DeckInfoName);
             var container = deckInfoPanel.GetNodeOrNull<Control>("VBoxContainer/ScrollContainer/VBoxContainer");
 
             // Clear our overrides in case something goes wrong
@@ -276,16 +217,13 @@ public class DeckSelectorPatch
                     inventory.IsLocked);
 
                 // Apply Event
-                deckHelper.Button.MousePressed += _ => OnDeckPressed(deckHelper, inventory, charSelectButton.IsLocked);
-                deckHelper.Button.MouseEntered +=
-                    () => OnHover(deckHelper, deckHelper, charSelectButton._character, inventory,
-                        charSelectButton.IsLocked);
-                deckHelper.Button.MouseExited += OnHoverLeave;
-
+                deckHelper.Button.MousePressed += _ => OnDeckPressed(deckInfoPanel, deckHelper, inventory,
+                    charSelectButton._character, charSelectButton.IsLocked);
                 if (first)
                 {
                     // Make sure to apply first deck
-                    OnDeckPressed(deckHelper, inventory, charSelectButton.IsLocked);
+                    OnDeckPressed(deckInfoPanel, deckHelper, inventory, charSelectButton._character,
+                        charSelectButton.IsLocked);
                     first = false;
                 }
             }

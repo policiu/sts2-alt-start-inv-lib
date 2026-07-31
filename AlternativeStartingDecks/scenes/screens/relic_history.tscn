@@ -10,7 +10,6 @@ custom_minimum_size = Vector2(0, 100)
 script = ExtResource("1_wpu8f")
 
 [node name="Header" type="RichTextLabel" parent="."]
-visible = false
 clip_contents = false
 custom_minimum_size = Vector2(0, 36)
 layout_mode = 2

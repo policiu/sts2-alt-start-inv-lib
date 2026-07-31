@@ -1,8 +1,29 @@
-[gd_scene load_steps=4 format=3 uid="uid://bc1bay66xqbt4"]
+[gd_scene load_steps=17 format=3 uid="uid://bc1bay66xqbt4"]
 
 [ext_resource type="Texture2D" uid="uid://btjc3p508sth1" path="res://images/ui/fuzzy_nine_patch_char_select.png" id="1_2y3j0"]
 [ext_resource type="FontVariation" uid="uid://c71uw4aqpsn1b" path="res://themes/spectral_glphy_space_two.tres" id="2_rcnbj"]
 [ext_resource type="Script" uid="uid://dtfio45agppyj" path="res://addons/mega_text/MegaLabel.cs" id="3_2g4s6"]
+[ext_resource type="Script" uid="uid://dwva4dvx6y2dc" path="res://src/Core/Nodes/CommonUi/NBackButton.cs" id="4_acp43"]
+[ext_resource type="FontVariation" uid="uid://cfurftqxyn4mn" path="res://themes/kreon_regular_glyph_space_one.tres" id="4_ig1cs"]
+[ext_resource type="FontVariation" uid="uid://ux4d708e7mk6" path="res://themes/kreon_bold_glyph_space_one.tres" id="5_l70hg"]
+[ext_resource type="Texture2D" uid="uid://bb803i8" path="res://images/atlases/ui_atlas.sprites/back_button.tres" id="5_s8klb"]
+[ext_resource type="Material" uid="uid://c4ycqv0gdxvmr" path="res://themes/canvas_item_material_additive_shared.tres" id="6_lh5hm"]
+[ext_resource type="Script" uid="uid://c2oywrx8xbqfx" path="res://addons/mega_text/MegaRichTextLabel.cs" id="6_qi74u"]
+[ext_resource type="Texture2D" uid="uid://cxm0iyd" path="res://images/atlases/compressed.sprites/back_button_outline.tres" id="7_ig1cs"]
+[ext_resource type="Texture2D" uid="uid://q1y4ux" path="res://images/atlases/compressed.sprites/back_button_x.tres" id="8_l70hg"]
+[ext_resource type="Shader" uid="uid://c66gb6g7tup3n" path="res://shaders/hsv.gdshader" id="9_qi74u"]
+[ext_resource type="Texture2D" uid="uid://b5x513mavmk5v" path="res://images/ui/placeholder_controller_icon.png" id="10_o6yww"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ig1cs"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_l70hg"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_k5jb6"]
+resource_local_to_scene = true
+shader = ExtResource("9_qi74u")
+shader_parameter/h = 1.0
+shader_parameter/s = 1.0
+shader_parameter/v = 1.0
 
 [node name="DeckInfoPanel" type="Control"]
 layout_mode = 3
@@ -70,3 +91,182 @@ horizontal_scroll_mode = 0
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]
 layout_mode = 2
 theme_override_constants/separation = 16
+
+[node name="DeckInformation" type="Control" parent="."]
+anchors_preset = 0
+offset_left = 653.0
+offset_top = 8.0
+offset_right = 1403.0
+offset_bottom = 758.0
+
+[node name="Bg" type="NinePatchRect" parent="DeckInformation"]
+modulate = Color(0, 0, 0, 0.360784)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -31.0
+offset_top = -8.0
+offset_right = 119.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_2y3j0")
+patch_margin_left = 42
+patch_margin_top = 42
+patch_margin_right = 42
+patch_margin_bottom = 42
+
+[node name="ScrollContainer" type="ScrollContainer" parent="DeckInformation"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 22.0
+offset_right = 83.0
+offset_bottom = -43.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="DeckInformation/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="DeckContainer" type="PanelContainer" parent="DeckInformation/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_ig1cs")
+
+[node name="RelicContainer" type="PanelContainer" parent="DeckInformation/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_l70hg")
+
+[node name="PotionAndHeaderContainer" type="VBoxContainer" parent="DeckInformation/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Header" type="RichTextLabel" parent="DeckInformation/ScrollContainer/VBoxContainer/PotionAndHeaderContainer"]
+clip_contents = false
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/default_color = Color(1, 0.964706, 0.886275, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.501961)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/normal_font = ExtResource("4_ig1cs")
+theme_override_fonts/bold_font = ExtResource("5_l70hg")
+theme_override_font_sizes/normal_font_size = 24
+theme_override_font_sizes/bold_font_size = 24
+theme_override_font_sizes/bold_italics_font_size = 24
+theme_override_font_sizes/italics_font_size = 24
+theme_override_font_sizes/mono_font_size = 24
+bbcode_enabled = true
+text = "[gold]Potions[/gold]"
+fit_content = true
+scroll_active = false
+script = ExtResource("6_qi74u")
+AutoSizeEnabled = false
+MinFontSize = 24
+MaxFontSize = 24
+
+[node name="PotionContainer" type="MarginContainer" parent="DeckInformation/ScrollContainer/VBoxContainer/PotionAndHeaderContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 75
+
+[node name="BackButton" type="Control" parent="DeckInformation"]
+anchors_preset = 0
+offset_left = 741.0
+offset_top = 156.0
+offset_right = 941.0
+offset_bottom = 266.0
+rotation = -1.5707964
+scale = Vector2(0.75, 0.75)
+script = ExtResource("4_acp43")
+
+[node name="Shadow" type="TextureRect" parent="DeckInformation/BackButton"]
+modulate = Color(0, 0, 0, 0.25098)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -68.0
+offset_top = -13.999979
+offset_right = -1.0
+offset_bottom = 26.000015
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("5_s8klb")
+expand_mode = 2
+stretch_mode = 5
+flip_h = true
+
+[node name="Outline" type="TextureRect" parent="DeckInformation/BackButton"]
+modulate = Color(0.941176, 0.705882, 0, 1)
+material = ExtResource("6_lh5hm")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -57.0
+offset_top = -16.999979
+offset_right = 16.0
+offset_bottom = 29.000015
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("7_ig1cs")
+expand_mode = 2
+stretch_mode = 5
+flip_h = true
+
+[node name="Image" type="TextureRect" parent="DeckInformation/BackButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -54.0
+offset_top = -13.999979
+offset_right = 13.0
+offset_bottom = 26.000015
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("5_s8klb")
+expand_mode = 2
+stretch_mode = 5
+flip_h = true
+
+[node name="Icon" type="TextureRect" parent="DeckInformation/BackButton/Image"]
+modulate = Color(1, 0.964706, 0.886275, 1)
+layout_mode = 0
+offset_left = 130.0
+offset_top = 28.0
+offset_right = 210.0
+offset_bottom = 108.0
+mouse_filter = 2
+texture = ExtResource("8_l70hg")
+expand_mode = 2
+stretch_mode = 5
+
+[node name="ControllerIcon" type="TextureRect" parent="DeckInformation/BackButton"]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_k5jb6")
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -364.0
+offset_top = -101.0
+offset_right = -124.0
+offset_bottom = 19.0
+grow_horizontal = 2
+grow_vertical = 2
+rotation = 1.5707964
+scale = Vector2(0.5, 0.5)
+pivot_offset = Vector2(256, 128)
+mouse_filter = 2
+texture = ExtResource("10_o6yww")
+expand_mode = 1
+stretch_mode = 5

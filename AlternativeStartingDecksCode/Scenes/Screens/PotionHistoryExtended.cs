@@ -25,6 +25,7 @@ public partial class PotionHistoryExtended : Control
         var list = potions.Select((p, idx) => p.ToMutable()).ToList();
 
         var list2 = new List<NPotionHolder>();
+        this.FreeChildren();
 
         for (var num = 0; num < potions.Count; num++)
         {
