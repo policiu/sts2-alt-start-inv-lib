@@ -1,11 +1,6 @@
 ﻿using AlternativeStartingInventory.AlternativeStartingInventoryCode.Utils;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Models;
-using MegaCrit.Sts2.Core.Models.Cards;
-using MegaCrit.Sts2.Core.Models.Potions;
-using MegaCrit.Sts2.Core.Models.Relics;
-using MegaCrit.Sts2.Core.Timeline;
-using MegaCrit.Sts2.Core.Timeline.Epochs;
 
 namespace AlternativeStartingInventory.AlternativeStartingInventoryCode.Patches.Utils;
 
@@ -17,62 +12,5 @@ internal class DeckInitializationPatch
     private static void LatePostInit()
     {
         StartingInventoryManager.LoadDefaultInventoryForAllCharacters();
-
-        // Load Some Examples
-        StartingInventoryManager.AddNewInventoryForCharacter(ModelDb.AllCharacters.First(),
-            new StartingInventory(ModelDb.AllCharacters.First(), "example")
-            {
-                Cards = [ModelDb.Card<Anger>()]
-            });
-
-        StartingInventoryManager.AddNewInventoryForCharacter(ModelDb.AllCharacters.First(),
-            new StartingInventory(ModelDb.AllCharacters.First(), "example2",
-                EpochModel.Get<Ironclad2Epoch>())
-            {
-                Gold = 20,
-                Hp = 3,
-                Name = "The Run!",
-                Description = "As hard as possible",
-                Relics = [ModelDb.Relic<Anchor>(), ModelDb.Relic<Pear>()],
-                Potions = [ModelDb.Potion<HeartOfIron>()]
-            });
-
-
-        StartingInventoryManager.AddNewInventoryForCharacter(ModelDb.AllCharacters.First(),
-            new StartingInventory(ModelDb.AllCharacters.First(), "example5"
-            )
-            {
-                Gold = 20,
-                Hp = 3,
-                Name = "The Run!",
-                Description = "As hard as possible",
-                Relics = [ModelDb.Relic<Anchor>(), ModelDb.Relic<Pear>()],
-                Potions = [ModelDb.Potion<HeartOfIron>()]
-            });
-
-
-        StartingInventoryManager.AddNewInventoryForCharacter(ModelDb.AllCharacters.First(),
-            new StartingInventory(ModelDb.AllCharacters.First(), "example4")
-            {
-                Gold = 20,
-                Hp = 3,
-                Name = "All Cards!",
-                Description = "As hard as possible",
-                Relics = ModelDb.AllRelics,
-                Potions = [ModelDb.Potion<HeartOfIron>()],
-                Cards = ModelDb.AllCards
-            });
-
-        StartingInventoryManager.AddNewInventoryForCharacter(ModelDb.AllCharacters.Last(),
-            new StartingInventory(ModelDb.AllCharacters.Last(), "example-3")
-            {
-                Name = "Example"
-            });
-
-        StartingInventoryManager.AddNewInventoryForCharacter(ModelDb.AllCharacters.First(),
-            new StartingInventory(ModelDb.AllCharacters.First(), "example9")
-            {
-                Relics = [ModelDb.Relic<WarPaint>()]
-            });
     }
 }
