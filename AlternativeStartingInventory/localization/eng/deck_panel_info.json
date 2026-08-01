@@ -1,3 +1,4 @@
 ﻿{
-  "POTION_TITLE": "[b][gold]Potions[/gold][/b]"
+  "POTION_TITLE": "[b][gold]Potions[/gold][/b]",
+  "UNLOCK_DEFAULT_STRING": "Need to complete the following Epochs: {0}"
 }
