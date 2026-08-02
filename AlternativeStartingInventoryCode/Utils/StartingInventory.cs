@@ -1,4 +1,5 @@
-﻿using MegaCrit.Sts2.Core.Entities.Players;
+﻿using Godot;
+using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Saves;
@@ -9,6 +10,11 @@ namespace AlternativeStartingInventory.AlternativeStartingInventoryCode.Utils;
 public class PlayerInventoryEventArgs : EventArgs
 {
     public required Player Player { get; set; }
+}
+
+public class AddContentEventArgs : EventArgs
+{
+    public required Control Owner { get; set; }
 }
 
 /// <summary>
@@ -57,6 +63,8 @@ public class StartingInventory(CharacterModel defaultCharacterOptions, string id
     public bool IsHidden =>
         RequiredEpochs.Any(requiredEpoch => !SaveManager.Instance.Progress.IsEpochRevealed(requiredEpoch.Id));
 
+    #region Events
+
     /// <summary>
     ///     Called before setting the Local Player's starting hp and gold
     /// </summary>
@@ -96,4 +104,16 @@ public class StartingInventory(CharacterModel defaultCharacterOptions, string id
     {
         BeforePlayerInventoryApply?.Invoke(this, eventArgs);
     }
+
+    /// <summary>
+    ///     Called when Setting up the Deck Information Display on the Character Select Screen
+    /// </summary>
+    public event EventHandler<AddContentEventArgs>? DisplayContentForCharacterSelect;
+
+    public void OnDisplayContentForCharacterSelect(AddContentEventArgs eventArgs)
+    {
+        DisplayContentForCharacterSelect?.Invoke(this, eventArgs);
+    }
+
+    #endregion
 }

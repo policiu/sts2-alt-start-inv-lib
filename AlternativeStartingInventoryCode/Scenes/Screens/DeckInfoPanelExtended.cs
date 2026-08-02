@@ -149,6 +149,11 @@ public partial class DeckInfoPanelExtended : Control
     public void ShowDeckInformation(StartingInventory inventory, CharacterModel characterModel)
     {
         LoadDeckInformation(inventory, characterModel);
+        if (_deckInformationContainer != null)
+            inventory.OnDisplayContentForCharacterSelect(new AddContentEventArgs
+            {
+                Owner = _deckInformationContainer
+            });
         _deckInformation?.Show();
     }
 
