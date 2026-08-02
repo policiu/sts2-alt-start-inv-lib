@@ -1,9 +1,15 @@
-﻿using MegaCrit.Sts2.Core.Localization;
+﻿using MegaCrit.Sts2.Core.Entities.Players;
+using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Saves;
 using MegaCrit.Sts2.Core.Timeline;
 
 namespace AlternativeStartingInventory.AlternativeStartingInventoryCode.Utils;
+
+public class PlayerInventoryEventArgs : EventArgs
+{
+    public required Player Player { get; set; }
+}
 
 /// <summary>
 ///     An Inventory which can replace the starting information of a player
@@ -21,6 +27,7 @@ public class StartingInventory(CharacterModel defaultCharacterOptions, string id
     public IEnumerable<PotionModel> Potions { get; init; } = defaultCharacterOptions.StartingPotions;
 
     public List<EpochModel> RequiredEpochs { get; init; } = new();
+
 
     public string Description { get; init; } =
         new LocString("characters", defaultCharacterOptions.CharacterSelectDesc).GetFormattedText();
@@ -49,4 +56,44 @@ public class StartingInventory(CharacterModel defaultCharacterOptions, string id
 
     public bool IsHidden =>
         RequiredEpochs.Any(requiredEpoch => !SaveManager.Instance.Progress.IsEpochRevealed(requiredEpoch.Id));
+
+    /// <summary>
+    ///     Called before setting the Local Player's starting hp and gold
+    /// </summary>
+    public event EventHandler<PlayerInventoryEventArgs>? BeforePlayerDataApply;
+
+    /// <summary>
+    ///     Called after setting the Local Player's starting hp and gold
+    /// </summary>
+    public event EventHandler<PlayerInventoryEventArgs>? AfterPlayerDataApply;
+
+    public void OnAfterPlayerDataApply(PlayerInventoryEventArgs eventArgs)
+    {
+        AfterPlayerDataApply?.Invoke(this, eventArgs);
+    }
+
+    public void OnBeforePlayerDataApply(PlayerInventoryEventArgs eventArgs)
+    {
+        BeforePlayerDataApply?.Invoke(this, eventArgs);
+    }
+
+    /// <summary>
+    ///     Called before setting the Local Player's starting deck, relics, and potions
+    /// </summary>
+    public event EventHandler<PlayerInventoryEventArgs>? BeforePlayerInventoryApply;
+
+    /// <summary>
+    ///     Called after setting the Local Player's starting deck, relics, and potions
+    /// </summary>
+    public event EventHandler<PlayerInventoryEventArgs>? AfterPlayerInventoryApply;
+
+    public void OnAfterPlayerInventoryApply(PlayerInventoryEventArgs eventArgs)
+    {
+        AfterPlayerInventoryApply?.Invoke(this, eventArgs);
+    }
+
+    public void OnBeforePlayerInventoryApply(PlayerInventoryEventArgs eventArgs)
+    {
+        BeforePlayerInventoryApply?.Invoke(this, eventArgs);
+    }
 }

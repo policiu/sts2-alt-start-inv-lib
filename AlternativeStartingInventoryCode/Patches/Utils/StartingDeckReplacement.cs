@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using AlternativeStartingInventory.AlternativeStartingInventoryCode.Utils;
+using HarmonyLib;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Runs;
@@ -33,16 +34,23 @@ public class StartingDeckReplacement
             }
 
             // TODO: Maybe check for all nulls?
+            var eventArgs = new PlayerInventoryEventArgs
+            {
+                Player = __instance
+            };
+            startingInventory.OnBeforePlayerInventoryApply(eventArgs);
             ReplaceDeck(__instance, startingInventory.Cards);
             ReplaceRelics(__instance, startingInventory.Relics);
             ReplacePotions(__instance, startingInventory.Potions);
+            startingInventory.OnAfterPlayerInventoryApply(eventArgs);
 
             // Don't run the original Method
             return false;
         }
         catch (Exception ex)
         {
-            AlternativeStartingInventoryLogger.Warn("Failed to replace deck: \n" + ex.Message + "\n" + ex.InnerException);
+            AlternativeStartingInventoryLogger.Warn(
+                "Failed to replace deck: \n" + ex.Message + "\n" + ex.InnerException);
             __instance.Deck.Clear();
             __instance._potionSlots.ForEach(pot => pot?.Discard());
             // Probably major problems here
@@ -101,13 +109,21 @@ public class CreateForNewRunPatch
     {
         var inventory = AlternativeStartingInventoryGlobals.StartingInventory;
         if (inventory is null) return;
-        AlternativeStartingInventoryLogger.Warn($"Launching with deck {inventory.Name} for netId {netId}");
+        AlternativeStartingInventoryLogger.Warn(
+            $"Launching with deck {inventory.Name} ({inventory.Id}) for netId {netId}");
         if (__result.NetId != AlternativeStartingInventoryGlobals.NetId) return;
 
+        var eventArgs = new PlayerInventoryEventArgs
+        {
+            Player = __result
+        };
+
+        inventory.OnBeforePlayerDataApply(eventArgs);
         __result.Creature.SetMaxHpInternal(inventory.Hp);
         __result.Creature.SetCurrentHpInternal(inventory.Hp);
 
         // Bypass Event... probably
         __result._gold = inventory.Gold;
+        inventory.OnAfterPlayerDataApply(eventArgs);
     }
 }
