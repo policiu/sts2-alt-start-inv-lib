@@ -5,24 +5,28 @@ using MegaCrit.Sts2.Core.Timeline;
 
 namespace AlternativeStartingInventory.AlternativeStartingInventoryCode.Utils;
 
-public class StartingInventory(CharacterModel characterModel, string id)
+/// <summary>
+///     An Inventory which can replace the starting information of a player
+/// </summary>
+/// <param name="defaultCharacterOptions">CharacterModel to default values to</param>
+/// <param name="id">Unique id of the inventory. Must be distinct per Character.</param>
+public class StartingInventory(CharacterModel defaultCharacterOptions, string id)
 {
-    private readonly string _overrideText = string.Empty;
     private readonly string _unlockText = "";
 
-    public int Hp { get; init; } = characterModel.StartingHp;
-    public int Gold { get; init; } = characterModel.StartingGold;
-    public IEnumerable<CardModel> Cards { get; init; } = characterModel.StartingDeck;
-    public IEnumerable<RelicModel> Relics { get; init; } = characterModel.StartingRelics;
-    public IEnumerable<PotionModel> Potions { get; init; } = characterModel.StartingPotions;
+    public int Hp { get; init; } = defaultCharacterOptions.StartingHp;
+    public int Gold { get; init; } = defaultCharacterOptions.StartingGold;
+    public IEnumerable<CardModel> Cards { get; init; } = defaultCharacterOptions.StartingDeck;
+    public IEnumerable<RelicModel> Relics { get; init; } = defaultCharacterOptions.StartingRelics;
+    public IEnumerable<PotionModel> Potions { get; init; } = defaultCharacterOptions.StartingPotions;
 
     public List<EpochModel> RequiredEpochs { get; init; } = new();
 
     public string Description { get; init; } =
-        new LocString("characters", characterModel.CharacterSelectDesc).GetFormattedText();
+        new LocString("characters", defaultCharacterOptions.CharacterSelectDesc).GetFormattedText();
 
     public string Name { get; init; } =
-        new LocString("characters", characterModel.CharacterSelectTitle).GetFormattedText();
+        new LocString("characters", defaultCharacterOptions.CharacterSelectTitle).GetFormattedText();
 
     public string Id { get; } = id;
 
