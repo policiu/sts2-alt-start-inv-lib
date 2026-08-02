@@ -30,8 +30,24 @@ public static class StartingInventoryManager
     public static List<StartingInventory> GetStartingInventoriesForCharacter(
         string characterClassName)
     {
-        return AlternativeStartingInventoryGlobals.AlternativeStartingInventoryByCharacter[characterClassName].Values
-            .ToList();
+        if (AlternativeStartingInventoryGlobals.AlternativeStartingInventoryByCharacter.TryGetValue(characterClassName,
+                out var inventories))
+            return inventories.Values.ToList();
+        return [];
+    }
+
+    public static bool RemoveStartingInventoryForCharacter(CharacterModel character, string inventoryId)
+    {
+        AlternativeStartingInventoryGlobals.AlternativeStartingInventoryByCharacter.TryGetValue(
+            character.GetType().Name, out var inventories);
+
+        if (inventories?.ContainsKey(inventoryId) ?? false)
+        {
+            inventories.Remove(inventoryId);
+            return true;
+        }
+
+        return false;
     }
 
     internal static void LoadDefaultInventoryForAllCharacters()
