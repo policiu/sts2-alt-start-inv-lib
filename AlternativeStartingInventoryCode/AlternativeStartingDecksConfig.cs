@@ -21,6 +21,15 @@ public static class AlternativeStartingInventoryLogger
             return;
         ModConfig.ModConfigLogger.PendingUserMessages.Add(message);
     }
+
+    /// <inheritdoc cref="M:BaseLib.Config.ModConfig.ModConfigLogger.Warn(System.String,System.Boolean)" />
+    public static void Info(string message, bool showInGui = false)
+    {
+        AlternativeStartingInventoryLib.Logger.Info(message);
+        if (!showInGui || ModConfig.ModConfigLogger.PendingUserMessages.Contains(message))
+            return;
+        ModConfig.ModConfigLogger.PendingUserMessages.Add(message);
+    }
 }
 
 internal class AlternativeStartingInventoryConfig : SimpleModConfig

@@ -14,6 +14,6 @@ public static class AlternativeStartingInventoryGlobals
     /// <summary>
     ///     List of Starting Inventories by Character
     /// </summary>
-    public static Dictionary<string, Dictionary<string, StartingInventory>>
+    internal static Dictionary<string, Dictionary<string, StartingInventory>>
         AlternativeStartingInventoryByCharacter { get; set; } = new();
 }
