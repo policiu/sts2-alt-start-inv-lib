@@ -84,20 +84,31 @@ public class StartingInventory(CharacterModel defaultCharacterOptions, string id
         get
         {
             if (_unlockText != string.Empty) return _unlockText;
-            return string.Format(new LocString("deck_panel_info", "UNLOCK_DEFAULT_STRING").GetFormattedText(),
-                string.Join(",",
-                    RequiredEpochs.Where(epoch => !SaveManager.Instance.Progress.IsEpochObtained(epoch.Id))
-                        .Select(epoch => epoch.Title.GetFormattedText())));
+            var baseStr = new LocString("deck_panel_info", "UNLOCK_DEFAULT_STRING").GetRawText();
+            var epochStrings = RequiredEpochs.Where(epoch => !SaveManager.Instance.Progress.IsEpochObtained(epoch.Id))
+                .Select(epoch => epoch.Title.GetFormattedText());
+            return string.Format(baseStr,
+                string.Join(", ", epochStrings));
         }
         init => _unlockText = value;
     }
 
 
     public bool IsLocked =>
-        RequiredEpochs.Any(requiredEpoch => !SaveManager.Instance.Progress.IsEpochObtained(requiredEpoch.Id));
-
-    public bool IsHidden =>
         RequiredEpochs.Any(requiredEpoch => !SaveManager.Instance.Progress.IsEpochRevealed(requiredEpoch.Id));
+
+    public bool IsHidden
+    {
+        get
+        {
+            return RequiredEpochs.Any(requiredEpoch =>
+            {
+                var serializableEpoch =
+                    SaveManager.Instance.Progress._epochs.FirstOrDefault(e => e.Id == requiredEpoch.Id);
+                return serializableEpoch is null or { State: EpochState.NoSlot };
+            });
+        }
+    }
 
     #region Events
 

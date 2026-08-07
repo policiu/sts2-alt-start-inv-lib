@@ -61,6 +61,7 @@ public class DeckSelectorPatch
 
             var next = DeckInfoPanelExtended.LoadScene();
             if (next == null) return;
+            next.SetVisible(false);
             infoPanelOg.AddSibling(next);
         }
     }
@@ -85,8 +86,9 @@ public class DeckSelectorPatch
             }
             catch (Exception e)
             {
-                AlternativeStartingInventoryLogger.Warn("Unable to inject the Character SelectScreen. " + "\n" + e.Message +
-                                                    "\n" + e.StackTrace);
+                AlternativeStartingInventoryLogger.Warn("Unable to inject the Character SelectScreen. " + "\n" +
+                                                        e.Message +
+                                                        "\n" + e.StackTrace);
                 AlternativeStartingInventoryLogger.Warn(e.InnerException?.Message ?? " ");
             }
         }
