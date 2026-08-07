@@ -26,6 +26,21 @@ system yourself. The main entry points are:
 4. Optionally listen to the inventory events for custom logic before or after the inventory is applied.
 
 ### Minimal example
+I recommend hooking on here:
+```csharp
+[HarmonyPatch]
+public class ModelDbPatch
+{
+    private const string ModPrefix = "mod-name";
+    
+    [HarmonyPatch(typeof(ModelDb), "InitIds")]
+    [HarmonyPrefix]
+    private static void LateInit()
+    {
+        //...
+    }
+}
+```
 
 ```csharp
 using MegaCrit.Sts2.Core.Models;
