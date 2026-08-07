@@ -26,23 +26,59 @@ public class StartingInventory(CharacterModel defaultCharacterOptions, string id
 {
     private readonly string _unlockText = "";
 
+    /// <summary>
+    ///     Starting Hp
+    /// </summary>
     public int Hp { get; init; } = defaultCharacterOptions.StartingHp;
+
+    /// <summary>
+    ///     Starting Gold
+    /// </summary>
     public int Gold { get; init; } = defaultCharacterOptions.StartingGold;
+
+    /// <summary>
+    ///     Starting Cards
+    /// </summary>
     public IEnumerable<CardModel> Cards { get; init; } = defaultCharacterOptions.StartingDeck;
+
+    /// <summary>
+    ///     Starting Relics for a run
+    /// </summary>
     public IEnumerable<RelicModel> Relics { get; init; } = defaultCharacterOptions.StartingRelics;
+
+    /// <summary>
+    ///     Starting Potions.
+    ///     Note: Discards over max potion limit
+    /// </summary>
     public IEnumerable<PotionModel> Potions { get; init; } = defaultCharacterOptions.StartingPotions;
 
+    /// <summary>
+    ///     Epochs to lock the deck behind.
+    ///     Note: Deck is hidden while Epochs are not revealed
+    /// </summary>
     public List<EpochModel> RequiredEpochs { get; init; } = new();
 
 
+    /// <summary>
+    ///     What to show in the flavor text of the deck
+    /// </summary>
     public string Description { get; init; } =
         new LocString("characters", defaultCharacterOptions.CharacterSelectDesc).GetFormattedText();
 
+    /// <summary>
+    ///     What to show in the title of the deck
+    /// </summary>
     public string Name { get; init; } =
         new LocString("characters", defaultCharacterOptions.CharacterSelectTitle).GetFormattedText();
 
+    /// <summary>
+    ///     Unique Id per character
+    /// </summary>
     public string Id { get; } = id;
 
+    /// <summary>
+    ///     Text shown while deck is locked
+    /// </summary>
     public string UnlockText
     {
         get
