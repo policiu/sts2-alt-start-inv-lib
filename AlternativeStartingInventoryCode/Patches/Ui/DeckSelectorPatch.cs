@@ -12,24 +12,32 @@ namespace AlternativeStartingInventory.AlternativeStartingInventoryCode.Patches.
 
 public class DeckSelectorPatch
 {
-    private static bool OnDeckPressed(DeckInfoPanelExtended panel, DeckInfoPlaceholderExtended deck,
+    private static bool OnDeckPressed(NCharacterSelectScreen screen, DeckInfoPanelExtended panel,
+        DeckInfoPlaceholderExtended deck,
         StartingInventory inventory,
         CharacterModel characterModel, bool isCharacterLocked)
     {
         // Prevent if locked :)
         if (isCharacterLocked)
         {
+            // Clear in case something goes really wrong
             AlternativeStartingInventoryGlobals.StartingInventory = null;
             return false;
         }
 
         if (inventory.IsLocked) return false;
 
+        // Note: We still show the deck while the player is ready
+        panel.ShowDeckInformation(inventory, characterModel);
+
+        // Prevent if ready
+        if (screen.Lobby.LocalPlayer.isReady) return false;
+
+        // Unselect Previous decks
         foreach (var node in deck.GetParent().FindChildren("*", "", false, false))
             if (node is DeckInfoPlaceholderExtended otherDeck)
                 otherDeck.SetSelected(false);
 
-        panel.ShowDeckInformation(inventory, characterModel);
         deck.SetSelected(true);
         AlternativeStartingInventoryGlobals.StartingInventory = inventory;
         return true;
@@ -192,11 +200,11 @@ public class DeckSelectorPatch
                     inventory.IsLocked);
 
                 // Apply Event
-                deckHelper.Button.MousePressed += _ => OnDeckPressed(deckInfoPanel, deckHelper, inventory,
+                deckHelper.Button.MousePressed += _ => OnDeckPressed(screen, deckInfoPanel, deckHelper, inventory,
                     characterModel, charSelectButton.IsLocked);
                 if (!isFirstVisibleDeckSelected)
                     // Make sure to apply first deck
-                    isFirstVisibleDeckSelected = OnDeckPressed(deckInfoPanel, deckHelper, inventory,
+                    isFirstVisibleDeckSelected = OnDeckPressed(screen, deckInfoPanel, deckHelper, inventory,
                         characterModel,
                         charSelectButton.IsLocked);
             }
