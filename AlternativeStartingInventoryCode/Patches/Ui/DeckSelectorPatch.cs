@@ -121,6 +121,7 @@ public class DeckSelectorPatch
             if (inventories.Count == 0 || (inventories.Count == 1 && inventories.First().Id == "default"))
             {
                 deckInfoPanel?.SetVisible(false);
+                AlternativeStartingInventoryGlobals.StartingInventory = null;
                 foreach (var node in infoPanel.GetChildren())
                 {
                     var child = (Control?)node;
