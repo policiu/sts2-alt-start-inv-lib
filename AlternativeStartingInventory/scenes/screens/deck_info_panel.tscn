@@ -264,6 +264,7 @@ offset_left = 56.187172
 offset_top = 8.806317
 offset_right = 104.18717
 offset_bottom = 56.806316
+rotation = 1.5707964
 scale = Vector2(0.85, 0.85)
 pivot_offset = Vector2(24, 24)
 mouse_filter = 2
