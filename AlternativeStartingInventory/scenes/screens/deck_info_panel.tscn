@@ -270,6 +270,7 @@ mouse_filter = 2
 script = ExtResource("11_qi74u")
 
 [node name="ControllerIcon" type="TextureRect" parent="DeckInformation/BackButton/Image/HotkeyIcon"]
+unique_name_in_owner = true
 material = SubResource("ShaderMaterial_h71nw")
 layout_mode = 1
 anchors_preset = 8
