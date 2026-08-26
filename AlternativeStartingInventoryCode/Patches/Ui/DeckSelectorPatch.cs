@@ -182,17 +182,30 @@ public class DeckSelectorPatch
 
             var inventories = StartingInventoryManager.GetStartingInventoriesForCharacter(character);
             var isFirstVisibleDeckSelected = false;
+            var first = true;
             foreach (var inventory in inventories)
             {
                 if (inventory.IsHidden) continue;
-                var deckInfoControl = (Control?)DeckInfoPlaceholderExtended.LoadScene();
+                var deckInfoControl = (DeckInfoPlaceholderExtended?)DeckInfoPlaceholderExtended.LoadScene();
                 if (deckInfoControl == null) continue;
                 deckInfoControl.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
 
-
                 container.AddChild(deckInfoControl);
 
-                var deckHelper = (DeckInfoPlaceholderExtended)deckInfoControl;
+                // Update Focus
+                deckInfoControl.Button.FocusNeighborTop =
+                    first
+                        ? deckInfoControl.Button.GetPath()
+                        : ((DeckInfoPlaceholderExtended)container.GetChild(-2)).Button.GetPath();
+                deckInfoControl.Button.FocusNeighborBottom = charSelectButton.GetPath();
+                if (!first)
+                    ((DeckInfoPlaceholderExtended)container.GetChild<Control>(-2)).Button.FocusNeighborBottom =
+                        deckInfoControl.Button.GetPath();
+                else
+                    charSelectButton.FocusNeighborTop =
+                        deckInfoControl.Button.GetPath();
+
+                var deckHelper = deckInfoControl;
                 deckHelper.SetVisible(true);
 
                 // Might be slow? Should profile?
@@ -201,18 +214,31 @@ public class DeckSelectorPatch
                     inventory.IsLocked);
 
                 // Apply Event
-                deckHelper.Button.MousePressed += _ => OnDeckPressed(screen, deckInfoPanel, deckHelper, inventory,
+                deckHelper.Button.GuiInput += e =>
+                {
+                    if (e.IsActionReleased("ui_confirm"))
+                        OnDeckPressed(screen, deckInfoPanel, deckHelper, inventory, characterModel,
+                            charSelectButton.IsLocked);
+                };
+                deckHelper.Button.Released += _ => OnDeckPressed(screen, deckInfoPanel, deckHelper, inventory,
                     characterModel, charSelectButton.IsLocked);
                 if (!isFirstVisibleDeckSelected)
                     // Make sure to apply first deck
                     isFirstVisibleDeckSelected = OnDeckPressed(screen, deckInfoPanel, deckHelper, inventory,
                         characterModel,
                         charSelectButton.IsLocked);
+
+                first = false;
             }
 
             // We didn't show any decks
-            if (!isFirstVisibleDeckSelected) deckInfoPanel.HideDeckInformation();
+            if (!isFirstVisibleDeckSelected)
+            {
+                deckInfoPanel.HideDeckInformation();
+                charSelectButton.FocusNeighborTop = charSelectButton.GetPath();
+            }
         }
+
 
         private static void SetupDeckStrings(DeckInfoPlaceholderExtended deckHelper,
             CharacterModel character,

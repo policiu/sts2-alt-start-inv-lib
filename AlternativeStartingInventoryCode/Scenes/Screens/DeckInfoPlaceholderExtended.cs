@@ -16,6 +16,7 @@ public partial class DeckInfoPlaceholderExtended : Control
     private Control? _buttonImage;
 
     private string _deckNode = "VBoxContainer/HpGold/Deck";
+    private StyleBoxFlat? _focusedTheme;
     private string _goldNode = "VBoxContainer/HpGold/Gold";
     private Tween? _hoverTween;
 
@@ -81,15 +82,24 @@ public partial class DeckInfoPlaceholderExtended : Control
 
     public NButton Button => GetNode<NButton>("Button");
 
+    public bool Selected { get; private set; }
+
+    public bool Focused { get; set; }
+
     public override void _Ready()
     {
         _selectedTheme =
             (StyleBoxFlat?)PreloadManager.Cache.GetAsset(
-                "res://AlternativeStartingInventory/themes/selected_theme.tres");
+                SelectedThemePath);
+        _focusedTheme =
+            (StyleBoxFlat?)PreloadManager.Cache.GetAsset(
+                FocusedThemePath);
         if (_selectedTheme != null) StartLoopingBorder(CreateTween().SetLoops(), _selectedTheme, 1.0f);
+        if (_focusedTheme != null) StartLoopingBorder(CreateTween().SetLoops(), _focusedTheme, 1.0f);
         _originalHoverScale = Scale;
         _originalColor = Modulate;
 
+        GetNode<MegaRichTextLabel>(_deckNameNode).FocusMode = FocusModeEnum.None;
         Button.MouseEntered += OnFocus;
         Button.FocusEntered += OnFocus;
         Button.MouseExited += OnUnfocus;
@@ -110,14 +120,35 @@ public partial class DeckInfoPlaceholderExtended : Control
 
     public void SetSelected(bool selected)
     {
+        Selected = selected;
+        if (Focused) return;
         if (!IsInstanceValid(_selectedTheme))
             _selectedTheme =
                 (StyleBoxFlat?)PreloadManager.Cache.LoadAsset(
-                    "res://AlternativeStartingInventory/themes/selected_theme.tres");
+                    SelectedThemePath);
         if (selected && _selectedTheme != null)
             AddThemeStyleboxOverride("panel", _selectedTheme);
         else
             RemoveThemeStyleboxOverride("panel");
+    }
+
+    private void SetFocused(bool focused)
+    {
+        Focused = focused;
+        if (!IsInstanceValid(_focusedTheme))
+            _focusedTheme = (StyleBoxFlat?)PreloadManager.Cache.LoadAsset(FocusedThemePath);
+
+
+        if (focused && _focusedTheme != null)
+        {
+            RemoveThemeStyleboxOverride("panel");
+            AddThemeStyleboxOverride("panel", _focusedTheme);
+        }
+        else
+        {
+            RemoveThemeStyleboxOverride("panel");
+            if (Selected) SetSelected(true);
+        }
     }
 
 
@@ -167,6 +198,7 @@ public partial class DeckInfoPlaceholderExtended : Control
         _hoverTween?.Kill();
         _hoverTween = CreateTween().SetParallel();
         _hoverTween.TweenProperty(this, (NodePath)"modulate", OutlineColor, 0.05);
+        SetFocused(true);
     }
 
     protected void OnUnfocus()
@@ -174,6 +206,7 @@ public partial class DeckInfoPlaceholderExtended : Control
         _hoverTween?.Kill();
         _hoverTween = CreateTween().SetParallel();
         _hoverTween.TweenProperty(this, (NodePath)"modulate", _originalColor, 0.05);
+        SetFocused(false);
     }
 
     protected void OnPress()
@@ -191,4 +224,17 @@ public partial class DeckInfoPlaceholderExtended : Control
         _hoverTween.TweenProperty(this, (NodePath)"scale", _originalHoverScale, 0.25)
             .SetTrans(Tween.TransitionType.Expo).SetEase(Tween.EaseType.Out);
     }
+
+    #region Assets
+
+    public const string SelectedThemePath = "res://AlternativeStartingInventory/themes/selected_theme.tres";
+    public const string FocusedThemePath = "res://AlternativeStartingInventory/themes/focused_theme.tres";
+
+    public static IEnumerable<string> AssetPaths =>
+    [
+        SelectedThemePath,
+        FocusedThemePath
+    ];
+
+    #endregion
 }

@@ -15,6 +15,8 @@ public partial class DeckInfoPanelExtended : Control
 {
     private const string DeckInformationNode = "DeckInformation";
     private const string DeckInformationContainerNode = "DeckInformation/ScrollContainer/VBoxContainer";
+    private const string DeckButtonsContainer = "VBoxContainer/ScrollContainer/VBoxContainer";
+    private Control? _deckButtonsContainer;
 
     private NDeckHistory? _deckHistory;
 
@@ -43,6 +45,7 @@ public partial class DeckInfoPanelExtended : Control
     {
         _deckInformation = GetNode<Control>(DeckInformationNode);
         _deckInformationContainer = GetNode<Control>(DeckInformationContainerNode);
+        _deckButtonsContainer = GetNode<Control>(DeckButtonsContainer);
 
         _deckHistoryContainer = GetNode<Control>("DeckInformation/ScrollContainer/VBoxContainer/DeckContainer");
         _potionHistoryContainer =
@@ -153,10 +156,36 @@ public partial class DeckInfoPanelExtended : Control
                 Owner = _deckInformationContainer
             });
         _deckInformation?.Show();
+        SetupFocus();
+    }
+
+    private void SetupFocus()
+    {
+        if (_deckButtonsContainer == null || _deckInformationContainer == null) return;
+
+        // Set Focus
+        foreach (var node in _deckButtonsContainer.GetChildren())
+        {
+            var deckButton = (Control)node;
+            deckButton.FocusNeighborRight = _deckInformationContainer.Visible
+                ? _deckInformationContainer.GetPath()
+                : deckButton.GetPath();
+        }
     }
 
     public void HideDeckInformation()
     {
         _deckInformation?.Hide();
+        SetupFocus();
+    }
+
+    public void ToggleDeckInformation()
+    {
+        if (_deckInformation == null) return;
+
+        if (_deckInformation.Visible)
+            _deckInformation.Hide();
+        else
+            _deckInformation.Show();
     }
 }
