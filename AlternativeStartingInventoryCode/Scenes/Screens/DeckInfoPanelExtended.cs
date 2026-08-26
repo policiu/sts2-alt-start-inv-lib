@@ -58,10 +58,8 @@ public partial class DeckInfoPanelExtended : Control
             button._Ready();
             button._EnterTree();
             button.Enable();
-            button.MouseReleased += e =>
-            {
-                if (button._isHovered) _deckInformation.Hide();
-            };
+
+            button.Released += e => { ToggleDeckInformation(); };
         }
     }
 

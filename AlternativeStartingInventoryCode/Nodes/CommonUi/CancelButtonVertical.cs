@@ -1,4 +1,6 @@
 ﻿using Godot;
+using MegaCrit.Sts2.addons.mega_text;
+using MegaCrit.Sts2.Core.ControllerInput;
 using MegaCrit.Sts2.Core.Nodes.CommonUi;
 using MegaCrit.Sts2.Core.Nodes.GodotExtensions;
 
@@ -10,6 +12,7 @@ public partial class CancelButtonVertical : NButton
     public static readonly Vector2 DownScale = Vector2.One;
     private Control? _buttonImage;
     private Tween? _hoverTween;
+    private Color _originalColor;
     private Vector2 _originalHoverScale;
     private Control? _outline;
 
@@ -18,6 +21,13 @@ public partial class CancelButtonVertical : NButton
     public Color OutlineColor = new("F0B400");
     public Color OutlineTransparentColor = new("FF000000");
 
+    protected override string[] Hotkeys =>
+    [
+        MegaInput.viewDrawPile
+    ];
+
+    protected override string? ControllerIconHotkey => MegaInput.viewDrawPile;
+
 
     public override void _Ready()
     {
@@ -25,6 +35,10 @@ public partial class CancelButtonVertical : NButton
         _outline = GetNode<Control>((NodePath)"Outline");
         _buttonImage = GetNode<Control>((NodePath)"Image");
         _originalHoverScale = Scale;
+        _originalColor = Modulate;
+        var label = GetNode<MegaLabel>("%KeyboardLabel");
+        label.MinFontSize = 30;
+        label.MaxFontSize = 30;
     }
 
     public new void Enable()
@@ -64,5 +78,10 @@ public partial class CancelButtonVertical : NButton
             .SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.Out);
         _hoverTween.TweenProperty(_outline, (NodePath)"modulate", OutlineTransparentColor, 0.25)
             .SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.Out);
+
+        _hoverTween.Chain().TweenProperty(this, (NodePath)"scale", _originalHoverScale, 0.01f)
+            .SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.In); // Swapped transitions/easing
+        _hoverTween.TweenProperty(_buttonImage, (NodePath)"modulate", _originalColor, 0.01f)
+            .SetTrans(Tween.TransitionType.Expo).SetEase(Tween.EaseType.In);
     }
 }
