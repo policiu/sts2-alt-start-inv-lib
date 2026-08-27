@@ -14,10 +14,6 @@ public static class DeckInfoPanel
        if (result == null) return null; 
        
        // Load Dependencies
-        var var_9_qi74u = PreloadManager.Cache.GetAsset<Shader>("res://shaders/hsv.gdshader");
-        var var_ShaderMaterial_h71nw = new ShaderMaterial();
-        var var_15_k5jb6 = PreloadManager.Cache.GetAsset<FontVariation>("res://themes/kreon_bold_shared.tres");
-        var var_FontVariation_fdsbe = new FontVariation();
         var var_1_2y3j0 = PreloadManager.Cache.GetAsset<Texture2D>("res://images/ui/fuzzy_nine_patch_char_select.png");
         var var_2_rcnbj = PreloadManager.Cache.GetAsset<FontVariation>("res://themes/spectral_glphy_space_two.tres");
         var var_3_2g4s6 = PreloadManager.Cache.GetAsset<Script>("res://addons/mega_text/MegaLabel.cs");
@@ -26,16 +22,8 @@ public static class DeckInfoPanel
         var var_4_ig1cs = PreloadManager.Cache.GetAsset<FontVariation>("res://themes/kreon_regular_glyph_space_one.tres");
         var var_5_l70hg = PreloadManager.Cache.GetAsset<FontVariation>("res://themes/kreon_bold_glyph_space_one.tres");
         var var_6_qi74u = PreloadManager.Cache.GetAsset<Script>("res://addons/mega_text/MegaRichTextLabel.cs");
-        var var_5_s8klb = PreloadManager.Cache.GetAsset<Texture2D>("res://images/atlases/ui_atlas.sprites/back_button.tres");
-        var var_6_lh5hm = PreloadManager.Cache.GetAsset<Material>("res://themes/canvas_item_material_additive_shared.tres");
-        var var_7_ig1cs = PreloadManager.Cache.GetAsset<Texture2D>("res://images/atlases/compressed.sprites/back_button_outline.tres");
-        var var_8_l70hg = PreloadManager.Cache.GetAsset<Texture2D>("res://images/atlases/compressed.sprites/back_button_x.tres");
-        var var_11_qi74u = PreloadManager.Cache.GetAsset<Script>("res://src/Core/Nodes/CommonUi/NHotkeyIcon.cs");
-        var var_10_o6yww = PreloadManager.Cache.GetAsset<Texture2D>("res://images/ui/placeholder_controller_icon.png");
-        var var_14_o6yww = PreloadManager.Cache.GetAsset<Texture2D>("res://images/ui/keyboard_icon_ninepatch.png");
        
        // Apply Dependencies
-                var_FontVariation_fdsbe.BaseFont = var_15_k5jb6;
         result.GetNode<NinePatchRect>("./NinePatchRect").Texture = var_1_2y3j0;
         result.GetNode<Label>("VBoxContainer/Name").AddThemeFontOverride("font", var_2_rcnbj);
         result.GetNode<Label>("VBoxContainer/Name").SafelySetScript(var_3_2g4s6);
@@ -43,15 +31,6 @@ public static class DeckInfoPanel
         result.GetNode<RichTextLabel>("DeckInformation/ScrollContainer/VBoxContainer/PotionAndHeaderContainer/Header").AddThemeFontOverride("normal_font", var_4_ig1cs);
         result.GetNode<RichTextLabel>("DeckInformation/ScrollContainer/VBoxContainer/PotionAndHeaderContainer/Header").AddThemeFontOverride("bold_font", var_5_l70hg);
         result.GetNode<RichTextLabel>("DeckInformation/ScrollContainer/VBoxContainer/PotionAndHeaderContainer/Header").SafelySetScript(var_6_qi74u);
-        result.GetNode<TextureRect>("DeckInformation/BackButton/Shadow").Texture = var_5_s8klb;
-        result.GetNode<TextureRect>("DeckInformation/BackButton/Outline").Texture = var_7_ig1cs;
-        result.GetNode<TextureRect>("DeckInformation/BackButton/Image").Texture = var_5_s8klb;
-        result.GetNode<TextureRect>("DeckInformation/BackButton/Image/Icon").Texture = var_8_l70hg;
-        result.GetNode<Control>("DeckInformation/BackButton/Image/HotkeyIcon").SafelySetScript(var_11_qi74u);
-        result.GetNode<TextureRect>("DeckInformation/BackButton/Image/HotkeyIcon/ControllerIcon").Texture = var_10_o6yww;
-        result.GetNode<NinePatchRect>("DeckInformation/BackButton/Image/HotkeyIcon/KeyboardIcon/TextureRect").Texture = var_14_o6yww;
-        result.GetNode<Label>("DeckInformation/BackButton/Image/HotkeyIcon/KeyboardIcon/LabelPositioner/KeyboardLabel").AddThemeFontOverride("font", var_FontVariation_fdsbe);
-        result.GetNode<Label>("DeckInformation/BackButton/Image/HotkeyIcon/KeyboardIcon/LabelPositioner/KeyboardLabel").SafelySetScript(var_3_2g4s6);
        
        result.Name = name;
        

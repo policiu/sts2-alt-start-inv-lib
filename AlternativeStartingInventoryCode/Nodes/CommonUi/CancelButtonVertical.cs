@@ -32,13 +32,16 @@ public partial class CancelButtonVertical : NButton
     public override void _Ready()
     {
         ConnectSignals();
-        _outline = GetNode<Control>((NodePath)"Outline");
-        _buttonImage = GetNode<Control>((NodePath)"Image");
+        _outline = GetNodeOrNull<Control>((NodePath)"Outline");
+        _buttonImage = GetNodeOrNull<Control>((NodePath)"Image");
         _originalHoverScale = Scale;
         _originalColor = Modulate;
-        var label = GetNode<MegaLabel>("%KeyboardLabel");
-        label.MinFontSize = 30;
-        label.MaxFontSize = 30;
+        var label = GetNodeOrNull<MegaLabel>("%KeyboardLabel");
+        if (label != null)
+        {
+            label.MinFontSize = 30;
+            label.MaxFontSize = 30;
+        }
     }
 
     public new void Enable()
