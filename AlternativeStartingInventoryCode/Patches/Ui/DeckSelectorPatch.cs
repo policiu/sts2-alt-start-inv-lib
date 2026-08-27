@@ -55,6 +55,8 @@ public class DeckSelectorPatch
         {
             try
             {
+                // Try again in case harmony skips us earlier
+                StartingInventoryManager.LoadAllInventories();
                 Logger.Debug($"Injecting {nameof(NCharacterSelectScreen)}-{nameof(NCharacterSelectScreen._Ready)}");
                 InjectDeckSelectorUi(__instance);
             }

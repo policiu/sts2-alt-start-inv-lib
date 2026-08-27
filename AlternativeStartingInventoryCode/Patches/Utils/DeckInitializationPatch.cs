@@ -8,9 +8,9 @@ namespace AlternativeStartingInventory.AlternativeStartingInventoryCode.Patches.
 internal class DeckInitializationPatch
 {
     [HarmonyPatch(typeof(ModelDb), "InitIds")]
-    [HarmonyPrefix]
+    [HarmonyPostfix]
     private static void LatePostInit()
     {
-        StartingInventoryManager.LoadDefaultInventoryForAllCharacters();
+        StartingInventoryManager.LoadAllInventories();
     }
 }
