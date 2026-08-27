@@ -30,6 +30,11 @@ public static class AlternativeStartingInventoryLogger
             return;
         ModConfig.ModConfigLogger.PendingUserMessages.Add(message);
     }
+
+    public static void Debug(string message)
+    {
+        AlternativeStartingInventoryLib.Logger.Debug(message);
+    }
 }
 
 internal class AlternativeStartingInventoryConfig : SimpleModConfig

@@ -10,6 +10,8 @@ using MegaCrit.Sts2.Core.Nodes.Screens.CharacterSelect;
 
 namespace AlternativeStartingInventory.AlternativeStartingInventoryCode.Patches.Ui;
 
+using Logger = AlternativeStartingInventoryLogger;
+
 public class DeckSelectorPatch
 {
     private static bool OnDeckPressed(NCharacterSelectScreen screen, DeckInfoPanelExtended panel,
@@ -22,15 +24,18 @@ public class DeckSelectorPatch
         {
             // Clear in case something goes really wrong
             AlternativeStartingInventoryGlobals.StartingInventory = null;
+            Logger.Debug("Character is locked");
             return false;
         }
 
+        Logger.Debug("Checking if inventory is locked.");
         if (inventory.IsLocked) return false;
 
         // Note: We still show the deck while the player is ready
         panel.ShowDeckInformation(inventory, characterModel);
 
         // Prevent if ready
+        Logger.Debug($"Is LocalPlayer ready? {screen.Lobby.LocalPlayer.isReady}");
         if (screen.Lobby.LocalPlayer.isReady) return false;
 
         // Unselect Previous decks
@@ -50,6 +55,7 @@ public class DeckSelectorPatch
         {
             try
             {
+                Logger.Debug($"Injecting {nameof(NCharacterSelectScreen)}-{nameof(NCharacterSelectScreen._Ready)}");
                 InjectDeckSelectorUi(__instance);
             }
             catch (Exception e)
@@ -68,6 +74,7 @@ public class DeckSelectorPatch
             var infoPanelOg = screen.GetNodeOrNull<Control>("InfoPanel");
 
             var next = DeckInfoPanelExtended.LoadScene();
+            Logger.Debug($"Loaded DeckInfoPanel: {next != null}");
             if (next == null) return;
             next.SetVisible(false);
             infoPanelOg.AddSibling(next);
@@ -89,15 +96,17 @@ public class DeckSelectorPatch
         {
             try
             {
+                Logger.Debug(
+                    $"Injecting {nameof(NCharacterSelectScreen)}-{nameof(NCharacterSelectScreen.SelectCharacter)}");
                 AlternativeStartingInventoryGlobals.NetId = __instance.Lobby.NetService.NetId;
                 InjectSelectCharacter(__instance, charSelectButton, characterModel);
             }
             catch (Exception e)
             {
-                AlternativeStartingInventoryLogger.Warn("Unable to inject the Character SelectScreen. " + "\n" +
-                                                        e.Message +
-                                                        "\n" + e.StackTrace);
-                AlternativeStartingInventoryLogger.Warn(e.InnerException?.Message ?? " ");
+                Logger.Warn("Unable to inject the Character SelectScreen. " + "\n" +
+                            e.Message +
+                            "\n" + e.StackTrace);
+                Logger.Warn(e.InnerException?.Message ?? " ");
             }
         }
 
@@ -120,6 +129,7 @@ public class DeckSelectorPatch
 
             if (inventories.Count == 0 || (inventories.Count == 1 && inventories.First().Id == "default"))
             {
+                Logger.Debug($"Not Enough inventories to display inventory. Reason: Count->({inventories.Count})");
                 deckInfoPanel?.SetVisible(false);
                 AlternativeStartingInventoryGlobals.StartingInventory = null;
                 foreach (var node in infoPanel.GetChildren())
@@ -176,7 +186,10 @@ public class DeckSelectorPatch
             // Clear our overrides in case something goes wrong
             AlternativeStartingInventoryGlobals.StartingInventory = null;
 
+            Logger.Debug("Loading Decks... Checking if container is present.");
             if (container == null) return;
+            Logger.Debug("Loading Decks... Container exists.");
+
             foreach (var child in container.GetChildren())
                 child.QueueFree();
 
@@ -185,8 +198,11 @@ public class DeckSelectorPatch
             var first = true;
             foreach (var inventory in inventories)
             {
+                Logger.Debug($"Checking if inventory is Hidden {inventory.IsHidden}");
                 if (inventory.IsHidden) continue;
                 var deckInfoControl = (DeckInfoPlaceholderExtended?)DeckInfoPlaceholderExtended.LoadScene();
+
+                Logger.Debug($"Checking if deckInfoControl is created: {deckInfoControl != null}");
                 if (deckInfoControl == null) continue;
                 deckInfoControl.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
 
@@ -234,6 +250,7 @@ public class DeckSelectorPatch
             // We didn't show any decks
             if (!isFirstVisibleDeckSelected)
             {
+                Logger.Warn("No decks are present! Hiding...");
                 deckInfoPanel.HideDeckInformation();
                 charSelectButton.FocusNeighborTop = charSelectButton.GetPath();
             }
